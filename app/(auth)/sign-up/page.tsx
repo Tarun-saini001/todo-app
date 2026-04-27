@@ -1,3 +1,4 @@
+import Link from "next/link";
 
 const Page = () => {
     return (
@@ -110,7 +111,7 @@ const Page = () => {
 
                         <button
                             type="submit"
-                            className="w-full bg-[#FF6767] text-white py-2 rounded-md hover:opacity-90"
+                            className="w-full bg-[#FF6767] cursor-pointer text-white py-2 rounded-md hover:opacity-90"
                         >
                             Register
                         </button>
@@ -118,7 +119,9 @@ const Page = () => {
 
                     <p className="text-sm text-center mt-4">
                         Already have an account?{" "}
-                        <span className="text-[#FF6767] cursor-pointer">Sign In</span>
+                        <Link href="/sign-in" className="text-[#FF6767] cursor-pointer">
+                            Sign In
+                        </Link>
                     </p>
                 </div>
             </div>
