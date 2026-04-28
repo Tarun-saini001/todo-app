@@ -46,10 +46,13 @@ export const registerSchema = z.object({
 });
 
 export const loginSchema = z.object({
-    usearNamea: z
+    userName: z
         .string()
         .trim()
-        .nonempty("Email is required")
-        .email("Invalid email format"),
-    password: z.string().nonempty("Password is required"),
+        .nonempty("Username is required"),
+
+    password: z
+        .string()
+        .trim()
+        .nonempty("Password is required"),
 });

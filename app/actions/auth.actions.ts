@@ -1,11 +1,13 @@
 "use server"
 
 import bcrypt from "bcryptjs"
-import { IUser, User } from "@/app/lib/models/user"
+import {  User } from "@/app/lib/models/user"
 import connectDB from "../lib/db"
-import { redirect } from 'next/navigation';
-import { registerSchema } from "../validations/auth.user";
+import { loginSchema, registerSchema } from "../validations/auth.user";
 import { messages } from "../constants/messages";
+import { generateAccessToken, generateRefreshToken } from "../lib/utils";
+import RefreshTokenModel from "../lib/models/token";
+import { cookies } from "next/headers";
 
 export async function registerUser(prevState: any, formData: FormData) {
 
@@ -59,7 +61,7 @@ export async function registerUser(prevState: any, formData: FormData) {
         return {
             success: false,
             errors: {},
-            message: 'Something went wrong. Please try again.',
+            message: messages.SOMETHNG_WENT_WRONG,
         };
     }
 
@@ -68,4 +70,83 @@ export async function registerUser(prevState: any, formData: FormData) {
         errors: {},
         message: "",
     };
+}
+
+
+export async function loginUser(prevState: any, formData: FormData) {
+    const data = {
+        userName: formData.get("userName"),
+        password: formData.get("password"),
+    };
+
+    const result = loginSchema.safeParse(data);
+
+    if (!result.success) {
+        return {
+            success: false,
+            message: "",
+            errors: result.error.flatten().fieldErrors,
+        };
+    }
+
+    const { userName, password } = result.data;
+
+
+    try {
+        await connectDB();
+
+        const user = await User.findOne({ userName });
+
+        if (!user) {
+            return {
+                success: false,
+                message:messages.USER_NOT_FOUND,
+            };
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            return {
+                success: false,
+                message:messages.INVALID_CREDENTALS
+            };
+        }
+
+        const accessToken = generateAccessToken(user._id.toString());
+        const refreshToken = generateRefreshToken(user._id.toString());
+
+
+        await RefreshTokenModel.create({
+            userId: user._id,
+            refreshToken,
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        });
+
+
+        const cookieStore = await cookies();
+
+        cookieStore.set("accessToken", accessToken, {
+            httpOnly: true,
+            maxAge: 60 * 15,
+            path: "/",
+        });
+
+        cookieStore.set("refreshToken", refreshToken, {
+            httpOnly: true,
+            maxAge: 60 * 60 * 24 * 7,
+            path: "/",
+        });
+
+        return {
+            success: true,
+            message: messages.LOGIN_SUCCESSFUL,
+        };
+    } catch (error) {
+        console.log("Login error:", error);
+        return {
+            success: false,
+            message: messages.SOMETHNG_WENT_WRONG,
+        };
+    }
 }

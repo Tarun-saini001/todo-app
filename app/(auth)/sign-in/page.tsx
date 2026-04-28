@@ -1,3 +1,4 @@
+import LoginForm from "@/app/components/login.form";
 import Link from "next/link";
 
 const Login = () => {
@@ -17,44 +18,7 @@ const Login = () => {
                 <div className="w-1/2 h-[70vh] flex flex-col justify-center px-10">
                     <h2 className="text-2xl font-semibold mb-6">Sign In</h2>
 
-                    <form className="space-y-4">
-
-                        {/* user name */}
-                        <div className="relative">
-                            <img
-                                src="./icons/userName.png"
-                                alt="user"
-                                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-70"
-                            />
-                            <input
-                                type="text"
-                                placeholder="Enter Username"
-                                className="w-full h-10 border rounded-md pl-10 pr-3 text-sm bg-gray-50 outline-none focus:ring-2 focus:ring-[#FF6767]"
-                            />
-                        </div>
-
-                        {/* password */}
-                        <div className="relative">
-                            <img
-                                src="./icons/password.png"
-                                alt="password"
-                                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-70"
-                            />
-                            <input
-                                type="password"
-                                placeholder="Enter Password"
-                                className="w-full h-10 border rounded-md pl-10 pr-3 text-sm bg-gray-50 outline-none focus:ring-2 focus:ring-[#FF6767]"
-                            />
-                        </div>
-
-
-                        <button
-                            type="submit"
-                            className="bg-[#FF6767] cursor-pointer text-white px-6 py-2 rounded-md hover:opacity-90 w-fit"
-                        >
-                            Login
-                        </button>
-                    </form>
+                    <LoginForm/>
 
 
                     <p className="text-sm  mt-4">
