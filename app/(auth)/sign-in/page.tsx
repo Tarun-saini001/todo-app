@@ -11,10 +11,10 @@ const Login = () => {
             />
 
 
-            <div className="relative z-10 w-[70%] bg-white rounded-lg shadow-lg flex p-6">
+            <div className="relative h-auto z-10 w-[70%] bg-white rounded-lg shadow-lg flex p-6">
 
                 {/* form*/}
-                <div className="w-1/2 flex flex-col justify-center px-10">
+                <div className="w-1/2 h-[70vh] flex flex-col justify-center px-10">
                     <h2 className="text-2xl font-semibold mb-6">Sign In</h2>
 
                     <form className="space-y-4">
@@ -57,7 +57,7 @@ const Login = () => {
                     </form>
 
 
-                    <p className="text-sm mt-4">
+                    <p className="text-sm  mt-4">
                         Don't have an account?{" "}
                             <Link href="/sign-up" className="text-[#FF6767] cursor-pointer">
                                 Create One
@@ -66,7 +66,7 @@ const Login = () => {
                 </div>
 
 
-                <div className="w-1/2 flex items-center justify-center">
+                <div className="w-1/2 flex h-[70vh] items-center justify-center">
                     <img
                         src="./images/login.png"
                         alt="login illustration"
