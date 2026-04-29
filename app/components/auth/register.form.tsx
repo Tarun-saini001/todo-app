@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { registerSchema } from "@/app/validations/auth.user";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { RegisterState } from "../../types/auth.types";
+import FormInput from "../ui/FormInput";
 
 
 
@@ -18,8 +19,8 @@ const initialState: RegisterState = {
 
 export default function RegisterForm() {
 
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    // const [showPassword, setShowPassword] = useState(false);
+    // const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -35,32 +36,23 @@ export default function RegisterForm() {
     const [serverMessage, setServerMessage] = useState("");
 
     useEffect(() => {
-        const saved = localStorage.getItem("registerForm");
+        const saved = localStorage.getItem("regirsterForm");
         if (saved) {
             setFormData(JSON.parse(saved));
         }
     }, []);
-    useEffect(() => {
-        localStorage.setItem("registerForm", JSON.stringify(formData));
-    }, [formData]);
+
     useEffect(() => {
         if (state.success) {
             localStorage.removeItem("registerForm");
+        } else {
+            localStorage.setItem("registerForm", JSON.stringify(formData));
         }
-    }, [state.success]);
+    }, [formData, state.success]);
 
     useEffect(() => {
         if (state.success) {
-            router.push("/sign-in");
-        }
 
-        if (!state.success && state.message) {
-            setServerMessage(state.message);
-        }
-    }, [state]);
-
-    useEffect(() => {
-        if (state.success) {
             setFormData({
                 firstName: "",
                 lastName: "",
@@ -69,8 +61,15 @@ export default function RegisterForm() {
                 password: "",
                 confirmPassword: "",
             });
+
+            router.push("/sign-in");
+            return;
         }
-    }, [state.success]);
+
+        if (state.message) {
+            setServerMessage(state.message);
+        }
+    }, [state]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
@@ -111,164 +110,78 @@ export default function RegisterForm() {
     return (
         <form action={formAction} className="space-y-2 h-auto">
 
-            <div className="relative">
-                <img
-                    src="./icons/firstName.png"
-                    alt="first name icon"
-                    className="absolute left-3 top-2.5 w-4 h-4 opacity-70"
-                />
-                <input
-                    type="text"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    placeholder="Enter First Name"
-                    className="w-full h-10 border pl-10 pr-10 rounded-md p-2 outline-none focus:border-transparent focus:ring-2 focus:ring-[#FF6767]"
-                />
-                {(blurErrors.firstName || state.errors?.firstName) && (
-                    <p className="text-red-500 text-xs mt-1">
-                        {blurErrors.firstName?.[0] || state.errors.firstName?.[0]}
-                    </p>
-                )}
-            </div>
+            <FormInput
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Enter First Name"
+                icon="/icons/firstName.png"
+                error={blurErrors.firstName?.[0] || state.errors?.firstName?.[0]}
+            />
 
-            <div className="relative">
-                <img
-                    src="./icons/lastName.png"
-                    alt="last name icon"
-                    className="absolute left-3 top-2.5 w-4 h-4 opacity-70"
-                />
-                <input
-                    type="text"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    placeholder="Enter Last Name"
-                    className="w-full h-10 border pl-10 pr-10 rounded-md p-2 outline-none focus:border-transparent  focus:ring-2 focus:ring-[#FF6767]"
-                />
-                {(blurErrors.lastName || state.errors?.lastName) && (
-                    <p className="text-red-500 text-xs mt-1">
-                        {blurErrors.lastName?.[0] || state.errors.lastName?.[0]}
-                    </p>
-                )}
-            </div>
+            <FormInput
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Enter Last Name"
+                icon="/icons/lastName.png"
+                error={blurErrors.lastName?.[0] || state.errors?.lastName?.[0]}
+            />
 
+            <FormInput
+                name="userName"
+                value={formData.userName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Enter Username"
+                icon="/icons/userName.png"
+                error={blurErrors.userName?.[0] || state.errors?.userName?.[0]}
+            />
 
-            <div className="relative">
-                <img
-                    src="./icons/userName.png"
-                    alt="user name icon"
-                    className="absolute left-3 top-2.5 w-4 h-4 opacity-70"
-                />
-                <input
-                    type="text"
-                    name="userName"
-                    value={formData.userName}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    placeholder="Enter Username"
-                    className="w-full h-10 border pl-10 pr-10 rounded-md p-2 outline-none focus:border-transparent  focus:ring-2 focus:ring-[#FF6767]"
-                />
-                {(blurErrors.userName || state.errors?.userName) && (
-                    <p className="text-red-500 text-xs mt-1">
-                        {blurErrors.userName?.[0] || state.errors.userName?.[0]}
-                    </p>
-                )}
-            </div>
+            <FormInput
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Enter Email"
+                icon="/icons/email.png"
+                error={blurErrors.email?.[0] || state.errors?.email?.[0]}
+            />
 
-            <div className="relative">
-                <img
-                    src="./icons/email.png"
-                    alt="email icon"
-                    className="absolute left-3 top-2.5 w-4 h-4 opacity-70"
-                />
-                <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    placeholder="Enter Email"
-                    className="w-full h-10 border pl-10 pr-10 rounded-md p-2 outline-none focus:border-transparent  focus:ring-2 focus:ring-[#FF6767]"
-                />
-                {(blurErrors.email || state.errors?.email) && (
-                    <p className="text-red-500 text-xs mt-1">
-                        {blurErrors.email?.[0] || state.errors.email?.[0]}
-                    </p>
-                )}
-            </div>
+            <FormInput
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Enter Password"
+                icon="/icons/password.png"
+                isPassword
+                error={blurErrors.password?.[0] || state.errors?.password?.[0]}
+            />
 
-            <div className="relative">
-                <img
-                    src="./icons/password.png"
-                    alt="password icon"
-                    className="absolute left-3 top-2.5 w-4 h-4 opacity-70"
-                />
+            <FormInput
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Confirm Password"
+                icon="/icons/confirmPass.png"
+                isPassword
+                error={blurErrors.confirmPassword?.[0] || state.errors?.confirmPassword?.[0]}
+            />
 
-                <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    placeholder="Enter Password"
-                    className="w-full h-10 border pl-10 pr-10 rounded-md p-2 outline-none  focus:border-transparent focus:ring-2 focus:ring-[#FF6767]"
-                />
-
-                <button
-                    type="button"
-                    onClick={() => setShowPassword(prev => !prev)}
-                    className="absolute right-3 top-2.5 text-gray-500 hover:text-black"
-                >
-                    {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-                </button>
-                {(blurErrors.password || state.errors?.password) && (
-                    <p className="text-red-500 text-xs mt-1">
-                        {blurErrors.password?.[0] || state.errors.password?.[0]}
-                    </p>
-                )}
-            </div>
-
-
-            <div className="relative">
-                <img
-                    src="./icons/confirmPass.png"
-                    alt="confirm passwor icon"
-                    className="absolute left-3 top-2.5 w-4 h-4 opacity-70"
-                />
-                <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    placeholder="Confirm Password"
-                    className="w-full pl-10 pr-10 border rounded-md p-2 outline-none focus:border-transparent  focus:ring-2 focus:ring-[#FF6767]"
-                />
-                <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(prev => !prev)}
-                    className="absolute right-3 top-2.5 text-gray-500 hover:text-black"
-                >
-                    {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-                </button>
-                {(blurErrors.confirmPassword || state.errors?.confirmPassword) && (
-                    <p className="text-red-500 text-xs mt-1">
-                        {blurErrors.confirmPassword?.[0] || state.errors.confirmPassword?.[0]}
-                    </p>
-                )}
-            </div>
 
 
             <div className="flex items-center gap-2 text-sm">
                 <input type="checkbox" />
                 <span>I agree to all terms</span>
             </div>
-            {serverMessage  && (
+            {serverMessage && (
                 <p className="text-red-500 text-sm text-center">
-                    {serverMessage }
+                    {serverMessage}
                 </p>
             )}
 

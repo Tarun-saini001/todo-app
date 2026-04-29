@@ -5,8 +5,8 @@ import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { loginSchema } from "@/app/validations/auth.user";
 import toast from "react-hot-toast";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { LoginState } from "../../types/auth.types";
+import FormInput from "../ui/FormInput";
 
 
 
@@ -23,7 +23,7 @@ const initialState = {
 
 export default function LoginForm() {
     const router = useRouter();
-    const [showPassword, setShowPassword] = useState(false);
+    // const [showPassword, setShowPassword] = useState(false);
 
     const [state, formAction] = useActionState<LoginState, FormData>(loginUser, initialState);
     const [formData, setFormData] = useState({
@@ -37,21 +37,23 @@ export default function LoginForm() {
     }>({});
     const [serverMessage, setServerMessage] = useState("");
 
-
     useEffect(() => {
         const saved = localStorage.getItem("loginForm");
         if (saved) {
             setFormData(JSON.parse(saved));
         }
     }, []);
+
     useEffect(() => {
-        localStorage.setItem("loginForm", JSON.stringify(formData));
-    }, [formData]);
-    useEffect(() => {
+
         if (state.success) {
             localStorage.removeItem("loginForm");
+            return;
+        } else {
+            localStorage.setItem("registerForm", JSON.stringify(formData));
         }
-    }, [state.success]);
+
+    }, [formData, state.success]);
 
     useEffect(() => {
         if (state.success) {
@@ -112,59 +114,28 @@ export default function LoginForm() {
         <form action={formAction} className="space-y-4">
 
             {/* user name */}
-            <div className="relative">
-                <img
-                    src="./icons/userName.png"
-                    alt="user"
-                    className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-70"
-                />
-                <input
-                    type="text"
-                    name="userName"
-                    value={formData.userName}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    placeholder="Enter Username"
-                    className="w-full h-10 border rounded-md pl-10 pr-3 text-sm bg-gray-50 outline-none focus:border-transparent  focus:ring-2 focus:ring-[#FF6767]"
-                />
-                {(blurErrors.userName || state.errors?.userName) && (
-                    <p className="text-red-500 text-xs mt-1">
-                        {blurErrors.userName?.[0] || state.errors?.userName?.[0]}
-                    </p>
-                )}
-            </div>
+            <FormInput
+                name="userName"
+                value={formData.userName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Enter Username"
+                icon="/icons/userName.png"
+                error={blurErrors.userName?.[0] || state.errors?.userName?.[0]}
+            />
 
 
-            <div className="relative">
-                <img
-                    src="./icons/password.png"
-                    alt="password icon"
-                    className="absolute left-3 top-2.5 w-4 h-4 opacity-70"
-                />
+            <FormInput
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Enter Password"
+                icon="/icons/password.png"
+                isPassword
+                error={blurErrors.password?.[0] || state.errors?.password?.[0]}
+            />
 
-                <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    placeholder="Enter Password"
-                    className="w-full h-10 border pl-10 pr-10 rounded-md p-2 outline-none focus:border-transparent  focus:ring-2 focus:ring-[#FF6767]"
-                />
-
-                <button
-                    type="button"
-                    onClick={() => setShowPassword(prev => !prev)}
-                    className="absolute right-3 top-2.5 text-gray-500 hover:text-black"
-                >
-                    {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-                </button>
-                {(blurErrors.password || state.errors?.password) && (
-                    <p className="text-red-500 text-xs mt-1">
-                        {blurErrors.password?.[0] || state.errors?.password?.[0]}
-                    </p>
-                )}
-            </div>
 
             {serverMessage && (
                 <p className="text-red-500 text-sm">{serverMessage}</p>
