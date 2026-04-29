@@ -1,25 +1,15 @@
-import LoginForm from "@/app/components/login.form";
+import LoginForm from "@/app/components/auth/login.form";
 import Link from "next/link";
 
 const Login = () => {
     return (
-        <div className="relative w-full h-screen bg-[#FF6767] flex items-center justify-center overflow-hidden">
+        <>
 
-            <img
-                src="./images/bg.png"
-                alt="bg image"
-                className="absolute inset-0 w-full h-full object-cover opacity-90"
-            />
-
-
-            <div className="relative h-auto z-10 w-[70%] bg-white rounded-lg shadow-lg flex p-6">
-
-                {/* form*/}
+                
                 <div className="w-1/2 h-[70vh] flex flex-col justify-center px-10">
                     <h2 className="text-2xl font-semibold mb-6">Sign In</h2>
 
                     <LoginForm/>
-
 
                     <p className="text-sm  mt-4">
                         Don't have an account?{" "}
@@ -37,8 +27,8 @@ const Login = () => {
                         className="w-full h-[60vh] object-contain"
                     />
                 </div>
-            </div>
-        </div>
+            
+        </>
     );
 };
 

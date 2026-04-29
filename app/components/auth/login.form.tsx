@@ -3,20 +3,12 @@
 import { loginUser } from "@/app/actions/auth.actions";
 import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { loginSchema } from "@/app/validations/auth.user";
 import toast from "react-hot-toast";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { LoginState } from "../../types/auth.types";
 
 
-type LoginState = {
-    success: boolean;
-    message: string;
-    errors?: {
-        userName?: string[];
-        password?: string[];
-    };
-};
 
 
 const initialState = {
@@ -43,6 +35,7 @@ export default function LoginForm() {
         userName?: string[];
         password?: string[];
     }>({});
+    const [serverMessage, setServerMessage] = useState("");
 
 
     useEffect(() => {
@@ -69,6 +62,7 @@ export default function LoginForm() {
         }
 
         if (!state.success && state.message) {
+            setServerMessage(state.message);
             toast.error(state.message, {
                 id: "login-failed"
             });
@@ -81,6 +75,11 @@ export default function LoginForm() {
             ...formData,
             [e.target.name]: e.target.value,
         });
+        setBlurErrors((prev) => ({
+            ...prev,
+            [e.target.name]: "",
+        }));
+        setServerMessage("");
     };
 
 
@@ -126,7 +125,7 @@ export default function LoginForm() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="Enter Username"
-                    className="w-full h-10 border rounded-md pl-10 pr-3 text-sm bg-gray-50 outline-none focus:ring-2 focus:ring-[#FF6767]"
+                    className="w-full h-10 border rounded-md pl-10 pr-3 text-sm bg-gray-50 outline-none focus:border-transparent  focus:ring-2 focus:ring-[#FF6767]"
                 />
                 {(blurErrors.userName || state.errors?.userName) && (
                     <p className="text-red-500 text-xs mt-1">
@@ -135,7 +134,7 @@ export default function LoginForm() {
                 )}
             </div>
 
-            {/* password */}
+
             <div className="relative">
                 <img
                     src="./icons/password.png"
@@ -150,7 +149,7 @@ export default function LoginForm() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="Enter Password"
-                    className="w-full h-10 border pl-10 pr-10 rounded-md p-2 outline-none focus:ring-2 focus:ring-[#FF6767]"
+                    className="w-full h-10 border pl-10 pr-10 rounded-md p-2 outline-none focus:border-transparent  focus:ring-2 focus:ring-[#FF6767]"
                 />
 
                 <button
@@ -167,8 +166,8 @@ export default function LoginForm() {
                 )}
             </div>
 
-            {state.message && (
-                <p className="text-red-500 text-sm">{state.message}</p>
+            {serverMessage && (
+                <p className="text-red-500 text-sm">{serverMessage}</p>
             )}
             <button
                 type="submit"

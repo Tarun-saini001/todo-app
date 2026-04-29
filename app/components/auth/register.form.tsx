@@ -6,23 +6,11 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { registerSchema } from "@/app/validations/auth.user";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { RegisterState } from "../../types/auth.types";
 
 
-type FormState = {
-    success: boolean;
-    errors: {
-        firstName?: string[];
-        lastName?: string[];
-        userName?: string[];
-        email?: string[];
-        password?: string[];
-        confirmPassword?: string[];
-    };
-    message: string;
-};
 
-
-const initialState: FormState = {
+const initialState: RegisterState = {
     success: false,
     errors: {},
     message: "",
@@ -41,9 +29,10 @@ export default function RegisterForm() {
         confirmPassword: "",
     });
 
-    const [blurErrors, setBlurErrors] = useState<FormState["errors"]>({});
+    const [blurErrors, setBlurErrors] = useState<RegisterState["errors"]>({});
     const router = useRouter();
-    const [state, formAction] = useActionState(registerUser, initialState);
+    const [state, formAction] = useActionState<RegisterState, FormData>(registerUser, initialState);
+    const [serverMessage, setServerMessage] = useState("");
 
     useEffect(() => {
         const saved = localStorage.getItem("registerForm");
@@ -64,7 +53,11 @@ export default function RegisterForm() {
         if (state.success) {
             router.push("/sign-in");
         }
-    }, [state.success]);
+
+        if (!state.success && state.message) {
+            setServerMessage(state.message);
+        }
+    }, [state]);
 
     useEffect(() => {
         if (state.success) {
@@ -84,6 +77,11 @@ export default function RegisterForm() {
             ...formData,
             [e.target.name]: e.target.value,
         });
+        setBlurErrors((prev) => ({
+            ...prev,
+            [e.target.name]: "",
+        }));
+        setServerMessage("");
     };
 
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -126,7 +124,7 @@ export default function RegisterForm() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="Enter First Name"
-                    className="w-full h-10 border pl-10 pr-10 rounded-md p-2 outline-none focus:ring-2 focus:ring-[#FF6767]"
+                    className="w-full h-10 border pl-10 pr-10 rounded-md p-2 outline-none focus:border-transparent focus:ring-2 focus:ring-[#FF6767]"
                 />
                 {(blurErrors.firstName || state.errors?.firstName) && (
                     <p className="text-red-500 text-xs mt-1">
@@ -139,7 +137,7 @@ export default function RegisterForm() {
                 <img
                     src="./icons/lastName.png"
                     alt="last name icon"
-                   className="absolute left-3 top-2.5 w-4 h-4 opacity-70"
+                    className="absolute left-3 top-2.5 w-4 h-4 opacity-70"
                 />
                 <input
                     type="text"
@@ -148,7 +146,7 @@ export default function RegisterForm() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="Enter Last Name"
-                   className="w-full h-10 border pl-10 pr-10 rounded-md p-2 outline-none focus:ring-2 focus:ring-[#FF6767]"
+                    className="w-full h-10 border pl-10 pr-10 rounded-md p-2 outline-none focus:border-transparent  focus:ring-2 focus:ring-[#FF6767]"
                 />
                 {(blurErrors.lastName || state.errors?.lastName) && (
                     <p className="text-red-500 text-xs mt-1">
@@ -162,7 +160,7 @@ export default function RegisterForm() {
                 <img
                     src="./icons/userName.png"
                     alt="user name icon"
-                   className="absolute left-3 top-2.5 w-4 h-4 opacity-70"
+                    className="absolute left-3 top-2.5 w-4 h-4 opacity-70"
                 />
                 <input
                     type="text"
@@ -171,7 +169,7 @@ export default function RegisterForm() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="Enter Username"
-                  className="w-full h-10 border pl-10 pr-10 rounded-md p-2 outline-none focus:ring-2 focus:ring-[#FF6767]"
+                    className="w-full h-10 border pl-10 pr-10 rounded-md p-2 outline-none focus:border-transparent  focus:ring-2 focus:ring-[#FF6767]"
                 />
                 {(blurErrors.userName || state.errors?.userName) && (
                     <p className="text-red-500 text-xs mt-1">
@@ -184,7 +182,7 @@ export default function RegisterForm() {
                 <img
                     src="./icons/email.png"
                     alt="email icon"
-                  className="absolute left-3 top-2.5 w-4 h-4 opacity-70"
+                    className="absolute left-3 top-2.5 w-4 h-4 opacity-70"
                 />
                 <input
                     type="email"
@@ -193,7 +191,7 @@ export default function RegisterForm() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="Enter Email"
-                   className="w-full h-10 border pl-10 pr-10 rounded-md p-2 outline-none focus:ring-2 focus:ring-[#FF6767]"
+                    className="w-full h-10 border pl-10 pr-10 rounded-md p-2 outline-none focus:border-transparent  focus:ring-2 focus:ring-[#FF6767]"
                 />
                 {(blurErrors.email || state.errors?.email) && (
                     <p className="text-red-500 text-xs mt-1">
@@ -206,9 +204,9 @@ export default function RegisterForm() {
                 <img
                     src="./icons/password.png"
                     alt="password icon"
-                   className="absolute left-3 top-2.5 w-4 h-4 opacity-70"
+                    className="absolute left-3 top-2.5 w-4 h-4 opacity-70"
                 />
-                
+
                 <input
                     type={showPassword ? "text" : "password"}
                     name="password"
@@ -216,7 +214,7 @@ export default function RegisterForm() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="Enter Password"
-                   className="w-full h-10 border pl-10 pr-10 rounded-md p-2 outline-none focus:ring-2 focus:ring-[#FF6767]"
+                    className="w-full h-10 border pl-10 pr-10 rounded-md p-2 outline-none  focus:border-transparent focus:ring-2 focus:ring-[#FF6767]"
                 />
 
                 <button
@@ -238,7 +236,7 @@ export default function RegisterForm() {
                 <img
                     src="./icons/confirmPass.png"
                     alt="confirm passwor icon"
-                   className="absolute left-3 top-2.5 w-4 h-4 opacity-70"
+                    className="absolute left-3 top-2.5 w-4 h-4 opacity-70"
                 />
                 <input
                     type={showConfirmPassword ? "text" : "password"}
@@ -247,12 +245,12 @@ export default function RegisterForm() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="Confirm Password"
-                    className="w-full pl-10 pr-10 border rounded-md p-2 outline-none focus:ring-2 focus:ring-[#FF6767]"
+                    className="w-full pl-10 pr-10 border rounded-md p-2 outline-none focus:border-transparent  focus:ring-2 focus:ring-[#FF6767]"
                 />
                 <button
                     type="button"
                     onClick={() => setShowConfirmPassword(prev => !prev)}
-                   className="absolute right-3 top-2.5 text-gray-500 hover:text-black"
+                    className="absolute right-3 top-2.5 text-gray-500 hover:text-black"
                 >
                     {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
                 </button>
@@ -268,9 +266,9 @@ export default function RegisterForm() {
                 <input type="checkbox" />
                 <span>I agree to all terms</span>
             </div>
-            {state.message && (
+            {serverMessage  && (
                 <p className="text-red-500 text-sm text-center">
-                    {state.message}
+                    {serverMessage }
                 </p>
             )}
 
