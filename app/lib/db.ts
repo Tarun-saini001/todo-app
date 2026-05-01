@@ -1,13 +1,20 @@
 import mongoose from "mongoose";
+
 const MONGODB_URI = process.env.MONGODB_URI;
-console.log('MONGODB_URI: ', MONGODB_URI);
+
+export default async function connectDB() {
+  if (!MONGODB_URI) {
+    throw new Error("MONGODB_URI Not Found");
+  }
 
 
-export default async function connectDB(){
-    if(!MONGODB_URI){
-        throw new Error("MONGODB_URI Not Found")
-    }
-    if(mongoose.connection.readyState===1)return;
-    await mongoose.connect(MONGODB_URI);
+  if ((global as any).mongoose) {
+    return (global as any).mongoose;
+  }
 
-}   
+  const conn = await mongoose.connect(MONGODB_URI);
+
+  (global as any).mongoose = conn;
+
+  return conn;
+}

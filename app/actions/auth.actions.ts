@@ -1,13 +1,14 @@
 "use server"
 
 import bcrypt from "bcryptjs"
-import {  User } from "@/app/lib/models/user"
+import { User } from "@/app/lib/models/user"
 import connectDB from "../lib/db"
 import { loginSchema, registerSchema } from "../validations/auth.user";
 import { messages } from "../constants/messages";
 import { generateAccessToken, generateRefreshToken } from "../lib/utils";
 import RefreshTokenModel from "../lib/models/token";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export async function registerUser(prevState: any, formData: FormData) {
 
@@ -100,7 +101,7 @@ export async function loginUser(prevState: any, formData: FormData) {
         if (!user) {
             return {
                 success: false,
-                message:messages.USER_NOT_FOUND,
+                message: messages.USER_NOT_FOUND,
             };
         }
 
@@ -109,7 +110,7 @@ export async function loginUser(prevState: any, formData: FormData) {
         if (!isMatch) {
             return {
                 success: false,
-                message:messages.INVALID_CREDENTALS
+                message: messages.INVALID_CREDENTALS
             };
         }
 
@@ -130,14 +131,19 @@ export async function loginUser(prevState: any, formData: FormData) {
             httpOnly: true,
             maxAge: 60 * 15,
             path: "/",
+            secure: false,
+            sameSite: "lax",
         });
 
         cookieStore.set("refreshToken", refreshToken, {
             httpOnly: true,
             maxAge: 60 * 60 * 24 * 7,
             path: "/",
+            secure: false,
+            sameSite: "lax",
         });
 
+        // redirect("/")
         return {
             success: true,
             message: messages.LOGIN_SUCCESSFUL,
@@ -149,4 +155,16 @@ export async function loginUser(prevState: any, formData: FormData) {
             message: messages.SOMETHNG_WENT_WRONG,
         };
     }
+}
+
+
+export async function logoutUser() {
+    console.log("inside logout action");
+    const cookieStore = await cookies();
+
+    cookieStore.delete("accessToken");
+    cookieStore.delete("refreshToken");
+    console.log('cookieStore: after logout action', cookieStore);
+
+    return { success: true, message:messages.LOGOUT_SUCCESSFULLY };
 }
