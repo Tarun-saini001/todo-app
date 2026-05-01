@@ -1,20 +1,23 @@
-import { redirect } from "next/navigation";
+import { FiPlus } from "react-icons/fi";
+import { getUser } from "../lib/auth";
+import AddTaskButton from "../components/ui/AddTaskButton";
 
 export default async function Home() {
-    // const res = await fetch("http://localhost:3000/api/auth/me", {
-    //     cache: "no-store",
-    //     credentials: "include",
-    // });
+    const user = await getUser();
 
-    // if (res.status === 401) {
-    //     redirect("/sign-in");
-    // }
+    return (
+        <div className="h-full flex flex-col">
 
-    // const data = await res.json();
 
-    // if (!data.success) {
-    //     redirect("/sign-in");
-    // }
+            <div className="text-2xl font-semibold">
+                Welcome back, {user.firstName} {user.lastName}
+            </div>
 
-    return <div>Welcome</div>;
+
+             <div className="flex-1 flex items-center justify-center">
+                <AddTaskButton />
+            </div>
+
+        </div>
+    );
 }

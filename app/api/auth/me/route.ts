@@ -12,7 +12,7 @@ export async function GET(req: Request) {
     const refreshToken = cookieStore.get("refreshToken")?.value;
 
     try {
-        
+
         if (accessToken) {
             const decoded: any = jwt.verify(
                 accessToken,
@@ -24,11 +24,13 @@ export async function GET(req: Request) {
 
             return NextResponse.json({ success: true, user });
         }
-    } catch {}
+    } catch (err) {
+        console.error("Access token verification failed:", err);
+    }
 
-    
+
     if (!refreshToken) {
-        return NextResponse.json({ success: false, message:messages.TOKEN_NOT_FOUND }, { status: 401 });
+        return NextResponse.json({ success: false, message: messages.TOKEN_NOT_FOUND }, { status: 401 });
     }
 
     try {
@@ -57,13 +59,13 @@ export async function GET(req: Request) {
         response.cookies.set("accessToken", newAccessToken, {
             httpOnly: true,
             path: "/",
-            secure:false,
-            sameSite:"lax",
+            secure: false,
+            sameSite: "lax",
             maxAge: 60 * 15,
         });
 
         return response;
     } catch {
-        return NextResponse.json({ success: false, message:messages.SOMETHNG_WENT_WRONG }, { status: 401 });
+        return NextResponse.json({ success: false, message: messages.SOMETHNG_WENT_WRONG }, { status: 401 });
     }
 }

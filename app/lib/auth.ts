@@ -223,3 +223,21 @@ export async function getCurrentUser() {
         return null;
     }
 }
+
+
+
+export async function getUser() {
+    const cookieStore = await cookies();
+
+    const res = await fetch("http://localhost:3000/api/auth/me", {
+        cache: "no-store",
+        headers: {
+            cookie: cookieStore.toString(),
+        },
+    });
+
+    if (res.status === 401) return null;
+
+    const data = await res.json();
+    return data.user;
+}
