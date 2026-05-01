@@ -89,6 +89,7 @@ export function middleware(req: NextRequest) {
     }
 
     if (!accessToken && !refreshToken) {
+        console.log("No tokens");
         return NextResponse.redirect(new URL("/sign-in", req.url));
     }
 

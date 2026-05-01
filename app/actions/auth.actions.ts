@@ -165,6 +165,6 @@ export async function logoutUser() {
     cookieStore.delete("accessToken");
     cookieStore.delete("refreshToken");
     console.log('cookieStore: after logout action', cookieStore);
-
-    return { success: true, message:messages.LOGOUT_SUCCESSFULLY };
+    redirect("/sign-in");
+    // return { success: true, message: messages.LOGOUT_SUCCESSFULLY };
 }

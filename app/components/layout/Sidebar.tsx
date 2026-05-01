@@ -17,7 +17,7 @@ export default function Sidebar({ user }: any) {
             <div>
 
                 <div className="flex flex-col items-center mb-6">
-                   
+
                     <h3 className="font-semibold">
                         {user?.firstName} {user?.lastName}
                     </h3>
@@ -35,14 +35,15 @@ export default function Sidebar({ user }: any) {
                 </nav>
             </div>
 
-            <div className="flex px-3 py-2 rounded-md  items-center font-semibold cursor-pointer gap-4 hover:bg-white hover:text-[#FF6767] transition">
-                <FiLogOut />  Logout
+            <form action={logoutUser}>
                 <button
-                    onClick={handleLogout}
-                    className="text-white  py-2 rounded-md hover:opacity-90"
+                    type="submit"
+                    className="flex w-full px-3 py-2 rounded-md items-center font-semibold cursor-pointer gap-4 hover:bg-white hover:text-[#FF6767] transition"
                 >
+                    <FiLogOut />
+                    Logout
                 </button>
-            </div>
+            </form>
 
         </aside>
     );
