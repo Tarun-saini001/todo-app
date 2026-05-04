@@ -6,7 +6,7 @@ export interface ITask extends Document {
     priority: "Extreme" | "Moderate" | "Low";
     description?: string;
     image?: string;
-    status: "pending" | "in-progress" | "completed";
+    status: "Not Started" | "In-Progress" | "Completed";
     userId: mongoose.Types.ObjectId;
     createdAt: Date;
     updatedAt: Date;
@@ -42,8 +42,8 @@ const taskSchema = new Schema<ITask>(
 
         status: {
             type: String,
-            enum: ["pending", "in-progress", "completed"],
-            default: "pending",
+            enum: ["Not Started", "In-Progress", "Completed"],
+            default: "Not Started",
         },
 
         userId: {

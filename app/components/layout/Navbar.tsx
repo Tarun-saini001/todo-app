@@ -21,7 +21,9 @@ export default function Navbar({ user }: { user: any }) {
                 <input
                     type="text"
                     placeholder="Search your task here..."
-                    className="w-full px-4 py-2 shadow rounded-lg"
+                    className="w-full px-4 py-2 shadow rounded-lg  outline-none 
+                   focus:ring-2 focus:ring-[#FF6767] focus:border-[#FF6767] 
+                   transition"
                 />
                 <span className="rounded h-9 w-9 cursor-pointer">
                     <GrFormSearch

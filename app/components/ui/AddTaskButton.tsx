@@ -12,7 +12,7 @@ export default function AddTaskButton() {
             className="shadow-lg px-6 py-4 flex items-center gap-2 cursor-pointer hover:bg-gray-100 rounded-lg"
         >
             <FiPlus className="text-[#FF6767]" />
-            <button>Add Task</button>
+            <button className="cursor-pointer">Add Task</button>
         </div>
     );
 }

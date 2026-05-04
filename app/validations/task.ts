@@ -15,23 +15,39 @@ export const taskSchema = z.object({
     description: z.string()
         .trim()
         .nonempty("Description is required")
-        .min(20, "Description must be at least 20 characters")
-        .regex(/^[A-Z]/, "Description must start with a capital letter")
-        .regex(/^[A-Za-z\s]*$/, "Description must contain only letters"),
-
+        .min(20, "Description must be at least 20 characters"),
     image: z
         .any()
-        .refine((file) => file instanceof File || typeof file === "string",
-            "Please upload an image")
+        .refine(
+            (file) => {
+
+                if (typeof file === "string") return true;
+
+
+                if (file && typeof file === "object") {
+                    return "type" in file && "size" in file;
+                }
+
+                return false;
+            },
+            "Please upload an image"
+        )
         .refine(
             (file) => {
                 if (typeof file === "string") return true;
-                if (file instanceof File) {
-                    return ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(file.type);
+
+                if (file && typeof file === "object" && "type" in file) {
+                    return ["image/jpeg", "image/jpg", "image/png", "image/webp"]
+                        .includes((file as any).type);
                 }
+
                 return false;
             },
             "Only images are allowed"
         )
 
 });
+
+
+
+

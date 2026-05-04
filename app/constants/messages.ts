@@ -8,5 +8,8 @@ export const messages = {
     LOGOUT_SUCCESSFULLY:"Logout successfully",
     TOKEN_NOT_FOUND:"Token not found",
     UNAUTHERISED:"You are not autherised",
-    FETCH_USER_SUCCESS:"User fetched successfully"
+    FETCH_USER_SUCCESS:"User fetched successfully",
+    VALIDATION_ERROR:"Validation error",
+    TASK_CREATED:"Task created successfully",
+    SERVER_ERROR:"Server error"
 }
