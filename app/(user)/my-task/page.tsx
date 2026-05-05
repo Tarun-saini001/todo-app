@@ -1,11 +1,8 @@
-import React from 'react'
+import { getUserTasks } from "@/app/lib/data/task";
+import MyTasksClient from "./MyTaskClient";
 
-const page = () => {
-  return (
-    <div>
-      my task
-    </div>
-  )
+export default async function Page() {
+    const tasks = await getUserTasks();
+
+    return <MyTasksClient initialTasks={tasks} />;
 }
-
-export default page

@@ -75,27 +75,45 @@
 // };
 
 
+// import { NextResponse } from "next/server";
+// import { NextRequest } from "next/server";
+
+// export function middleware(req: NextRequest) {
+//     const accessToken = req.cookies.get("accessToken")?.value;
+//     const refreshToken = req.cookies.get("refreshToken")?.value;
+
+//     const publicPaths = ["/sign-in", "/sign-up"];
+
+//     if (publicPaths.includes(req.nextUrl.pathname)) {
+//         return NextResponse.next();
+//     }
+
+//     if (!accessToken && !refreshToken) {
+//         console.log("No tokens");
+//         return NextResponse.redirect(new URL("/sign-in", req.url));
+//     }
+
+//     return NextResponse.next();
+// }
+
+// export const config = {
+//     matcher: ["/((?!_next|api|sign-in|sign-up).*)"],
+// };
+
+
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
     const accessToken = req.cookies.get("accessToken")?.value;
-    const refreshToken = req.cookies.get("refreshToken")?.value;
 
-    const publicPaths = ["/sign-in", "/sign-up"];
+    const isAuthPage =
+        req.nextUrl.pathname.startsWith("/sign-in") ||
+        req.nextUrl.pathname.startsWith("/register");
 
-    if (publicPaths.includes(req.nextUrl.pathname)) {
-        return NextResponse.next();
-    }
-
-    if (!accessToken && !refreshToken) {
-        console.log("No tokens");
+    if (!accessToken && !isAuthPage) {
         return NextResponse.redirect(new URL("/sign-in", req.url));
     }
 
     return NextResponse.next();
 }
-
-export const config = {
-    matcher: ["/((?!_next|api|sign-in|sign-up).*)"],
-};

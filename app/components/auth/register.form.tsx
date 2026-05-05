@@ -189,7 +189,7 @@ export default function RegisterForm() {
                 type="submit"
                 className="w-full bg-[#FF6767] cursor-pointer text-white py-2 rounded-md hover:opacity-90"
             >
-                Register
+                Create
             </button>
         </form>
     );

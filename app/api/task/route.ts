@@ -49,7 +49,7 @@ export async function POST(req: Request) {
 
         const task = await Task.create({
             ...parsed.data,
-            status: "pending",
+            status: "Not Started",
             userId: user._id,
         });
 

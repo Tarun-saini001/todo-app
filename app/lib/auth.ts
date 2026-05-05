@@ -226,18 +226,82 @@ export async function getCurrentUser() {
 
 
 
+// export async function getUser() {
+//     const cookieStore = await cookies();
+
+//     const res = await fetch("http://localhost:3000/api/auth/me", {
+//         cache: "no-store",
+//         headers: {
+//             cookie: cookieStore.toString(),
+//         },
+//     });
+//     console.log('res:---- ', res);
+
+//     if (res.status === 401) return null;
+
+//     const data = await res.json();
+//     console.log('data: ', data);
+//     return data.user;
+// }
+
+
+// export async function getUser() {
+//     try {
+//         const cookieStore = await  cookies();
+
+//         const accessToken = cookieStore.get("accessToken")?.value;
+//         console.log('accessToken: ', accessToken);
+
+//         if (!accessToken) return null;
+
+//         const decoded: any = jwt.verify(
+//             accessToken,
+//             process.env.ACCESS_TOKEN_SECRET!
+//         );
+
+//         await connectDB();
+
+//         const userDoc= await User.findById(decoded.userId).select("-password").lean();
+//         const user = JSON.parse(JSON.stringify(userDoc));
+//         return user
+//     } catch {
+//         return null;
+//     }
+// }
+
 export async function getUser() {
     const cookieStore = await cookies();
 
-    const res = await fetch("http://localhost:3000/api/auth/me", {
-        cache: "no-store",
-        headers: {
-            cookie: cookieStore.toString(),
-        },
-    });
+    let accessToken = cookieStore.get("accessToken")?.value;
 
-    if (res.status === 401) return null;
+    if (!accessToken) {
+        await fetch("http://localhost:3000/api/auth/refresh", {
+            headers: {
+                cookie: cookieStore.toString(),
+            },
+            cache: "no-store",
+        });
 
-    const data = await res.json();
-    return data.user;
+        const updatedCookies = await cookies();
+        accessToken = updatedCookies.get("accessToken")?.value;
+
+        if (!accessToken) return null;
+    }
+
+    try {
+        const decoded: any = jwt.verify(
+            accessToken,
+            process.env.ACCESS_TOKEN_SECRET!
+        );
+
+        await connectDB();
+
+        const user = await User.findById(decoded.userId)
+            .select("-password")
+            .lean();
+
+        return JSON.parse(JSON.stringify(user));
+    } catch {
+        return null;
+    }
 }
