@@ -12,11 +12,15 @@ export default function AddTaskPage() {
     const isEdit = Boolean(taskId);
     const router = useRouter();
 
-
+    const getTodayDate = () => {
+        const today = new Date();
+        console.log('today: ', today);
+        return today.toISOString().split("T")[0];
+    };
 
     const [form, setForm] = useState({
         title: "",
-        date: "",
+        date: getTodayDate(),
         priority: "Moderate",
         description: "",
         status: "Not Started",
@@ -111,17 +115,35 @@ export default function AddTaskPage() {
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        const updatedForm = { ...form, [name]: value };
+        setForm(updatedForm);
 
+        
+        const result = taskSchema.safeParse(updatedForm);
+
+        if (!result.success) {
+            const fieldErrors = result.error.flatten().fieldErrors;
+
+            setErrors((prev: any) => ({
+                ...prev,
+                [name]: fieldErrors[name as keyof typeof fieldErrors],
+            }));
+        } else {
+            setErrors((prev: any) => ({
+                ...prev,
+                [name]: undefined,
+            }));
+        }
 
         setBlurErrors((prev: any) => ({
             ...prev,
             [e.target.name]: undefined,
         }));
-        setErrors((prev: any) => ({
-            ...prev,
-            [e.target.name]: undefined,
-        }));
+        // setErrors((prev: any) => ({
+        //     ...prev,
+        //     [e.target.name]: undefined,
+        // }));
     };
 
 
@@ -177,8 +199,8 @@ export default function AddTaskPage() {
             return;
         }
         if (isEdit && !isChanged()) {
-            toast("No changes made",{
-                id:"no-changes"
+            toast("No changes made", {
+                id: "no-changes"
             });
             setLoading(false);
             return;
@@ -252,6 +274,7 @@ export default function AddTaskPage() {
                         value={form.title}
                         onChange={handleChange}
                         onBlur={handleBlur}
+                        maxLength={15}
                         className="w-full border text-gray-800 border-gray-300 rounded-md px-3 py-2 outline-none 
                         focus:ring-2 focus:ring-[#FF6767] focus:border-[#FF6767] 
                         transition"
@@ -338,6 +361,7 @@ export default function AddTaskPage() {
                         <textarea
                             name="description"
                             value={form.description}
+                            maxLength={250}
                             onChange={handleChange}
                             className="w-full h-40 border  border-gray-300 rounded-md px-3 py-2 outline-none 
                    focus:ring-2 focus:ring-[#FF6767] focus:border-[#FF6767] 

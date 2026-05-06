@@ -14,5 +14,6 @@ export const messages = {
     SERVER_ERROR:"Server error",
     TASK_DELETE:"Task deleted successfully",
     TASK_NOT_FOUND:"Task not found",
-    TASK_UPDATED:"Task updated successfully"
+    TASK_UPDATED:"Task updated successfully",
+    STATUS_UPDATED:"Status update successfully"
 }

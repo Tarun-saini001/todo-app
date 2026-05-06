@@ -28,6 +28,7 @@ export async function getExtremeTasks() {
     const tasks = await Task.find({
         userId: user._id,
         priority: "Extreme",
+        status: { $ne: "Completed" }
     })
         .sort({ createdAt: -1 })
         .lean();

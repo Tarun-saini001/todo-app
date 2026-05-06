@@ -66,7 +66,7 @@ export default async function Home() {
     return (
         <div className="h-full flex flex-col gap-6">
 
-            <h2 className="text-2xl font-semibold text-gray-800">
+            <h2 className="text-xl font-semibold text-gray-800">
                 Welcome back, {user.firstName} {user.lastName}
             </h2>
 

@@ -5,6 +5,7 @@ export const taskSchema = z.object({
         .trim()
         .nonempty("Title is required")
         .min(2, "Title must be at least 2 characters")
+        .max(15, "Title must be at most 15 characters")
         .regex(/^[A-Z]/, "Title must start with a capital letter")
         .regex(/^[A-Za-z\s]*$/, "Title must contain only letters"),
 
@@ -15,7 +16,8 @@ export const taskSchema = z.object({
     description: z.string()
         .trim()
         .nonempty("Description is required")
-        .min(20, "Description must be at least 20 characters"),
+        .min(20, "Description must be at least 20 characters")
+        .max(250, "Description must be at most 100 characters"),
     image: z
         .any()
         .refine(
