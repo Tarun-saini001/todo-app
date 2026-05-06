@@ -2,7 +2,6 @@ import { getUser } from "../lib/auth";
 import Sidebar from "@/app/components/layout/Sidebar";
 import Navbar from "@/app/components/layout/Navbar";
 import { redirect } from "next/navigation";
-import AuthRefresher from "../lib/AuthRefresh";
 
 export default async function UserLayout({
     children,
@@ -24,10 +23,10 @@ export default async function UserLayout({
             <Navbar user={user} />
 
 
-            <div className="flex flex-1 overflow-hidden">
+            <div className="flex flex-1 overflow-hidden min-h-0">
                 <Sidebar user={user} />
 
-                <main className="flex-1 p-6 overflow-hidden">
+                <main className="flex-1 p-6 overflow-hidden min-h-0">
                     {children}
                 </main>
             </div>

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
@@ -20,7 +21,7 @@ export default function TaskDetail({
     onDelete,
 }: {
     task: Task | null;
-    onDelete: () => void;
+    onDelete?: () => void;
 }) {
     const router = useRouter();
     if (!task) {
@@ -102,7 +103,7 @@ export default function TaskDetail({
             </div>
 
 
-            <div className="flex justify-end gap-3 pt-4  mt-4 bg-white">
+            <div className="flex justify-end gap-3 pt-4  mt-4 ">
                 <button
                     onClick={onDelete}
                     className="bg-[#FF6767] cursor-pointer text-white text-center rounded flex justify-center text-lg items-center h-7 w-7">

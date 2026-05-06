@@ -1,5 +1,6 @@
 "use client";
 
+import GoBackButton from "@/app/components/ui/GoBackButton";
 import { taskSchema } from "@/app/validations/task";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -254,12 +255,8 @@ export default function AddTaskPage() {
                     {isEdit ? "Edit Task" : "Add New Task"}
                 </h2>
 
-                <button
-                    onClick={() => router.back()}
-                    className=" underline cursor-pointer"
-                >
-                    Go Back
-                </button>
+            
+                <GoBackButton/>
             </div>
 
 

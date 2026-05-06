@@ -25,17 +25,17 @@ export default function TaskCard({ task }: { task: Task }) {
         task.priority === "Low"
             ? "text-green-600"
             : task.priority === "Moderate"
-            ? "text-blue-600"
-            : "text-red-600";
+                ? "text-blue-600"
+                : "text-red-600";
 
     const statusColor =
         task.status === "Completed"
             ? "text-green-600"
             : task.status === "In-Progress"
-            ? "text-blue-600"
-            : "text-red-600";
+                ? "text-blue-600"
+                : "text-red-600";
 
-    
+
     const getNextStatus = () => {
         if (task.status === "Not Started") return "In-Progress";
         if (task.status === "In-Progress") return "Completed";
@@ -50,17 +50,19 @@ export default function TaskCard({ task }: { task: Task }) {
         setOpen(true);
     };
 
-   const handleConfirm = async () => {
-    await updateTaskStatus(task._id, nextStatus);
-    setOpen(false);
-    router.refresh(); 
-};
+    const handleConfirm = async () => {
+        await updateTaskStatus(task._id, nextStatus);
+        setOpen(false);
+        router.refresh();
+    };
 
     const next = getNextStatus();
 
     return (
         <>
-            <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-300 hover:shadow-md transition flex justify-between gap-4">
+            <div
+                onClick={() => router.push(`/task/${task._id}`)}
+                className="bg-white rounded-2xl p-4 cursor-pointer shadow-sm border border-gray-300 hover:shadow-md transition flex justify-between gap-4">
 
                 {/* left */}
                 <div className="flex flex-col justify-between flex-1">
@@ -91,7 +93,7 @@ export default function TaskCard({ task }: { task: Task }) {
                     </div>
                 </div>
 
-              
+
                 <div className="flex flex-col items-center gap-2">
                     {task.image && (
                         <div className="w-[70px] h-[70px] relative">
@@ -104,7 +106,7 @@ export default function TaskCard({ task }: { task: Task }) {
                         </div>
                     )}
 
-                    
+
                     {next && (
                         <button
                             onClick={handleClick}
@@ -116,7 +118,7 @@ export default function TaskCard({ task }: { task: Task }) {
                 </div>
             </div>
 
-           
+
             <ChangeStatus
                 open={open}
                 onClose={() => setOpen(false)}

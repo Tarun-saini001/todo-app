@@ -64,9 +64,9 @@ export default async function Home() {
         pendingTasks.length === 0 && completedTasks.length === 0;
 
     return (
-        <div className="h-full flex flex-col gap-6">
+        <div className="h-full flex flex-col gap-4 min-h-0">
 
-            <h2 className="text-xl font-semibold text-gray-800">
+            <h2 className="text-xl font-semibold  text-gray-800">
                 Welcome back, {user.firstName} {user.lastName}
             </h2>
 
@@ -87,13 +87,13 @@ export default async function Home() {
                 <div className="grid grid-cols-3 gap-6 flex-1">
 
 
-                    <div className="col-span-2 bg-white p-4 rounded-2xl shadow-sm ">
-                        <div className="flex justify-between items-center mb-4">
+                    <div className="col-span-2 bg-white p-3 rounded-2xl shadow-sm ">
+                        <div className="flex justify-between items-center mb-3">
                             <h3 className="font-semibold text-gray-800 text-lg">To-Do</h3>
                             <AddTaskButton />
                         </div>
 
-                        <div className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-2 ">
                             {pendingTasks.map((task: any) => (
                                 <TaskCard key={task._id} task={task} />
                             ))}
@@ -109,10 +109,10 @@ export default async function Home() {
                             notStarted={stats.notStarted}
                         />
 
-                        <div className="bg-white p-6 rounded-2xl shadow-sm h-full ">
+                        <div className="bg-white p-6 rounded-2xl shadow-sm  ">
                             <h3 className="font-semibold  flex items-center gap-2"><BiTask /> Completed Task</h3>
 
-                            <div className="flex flex-col gap-5 h-full ">
+                            <div className="flex flex-col gap-5  overflow-y-auto ">
                                 {completedTasks.length === 0 ? (
                                     <p className="text-gray-500 flex justify-center items-center h-full text-sm">
                                         No tasks completed yet.
