@@ -19,6 +19,7 @@ export default function AddTaskPage() {
         date: "",
         priority: "Moderate",
         description: "",
+        status: "Not Started",
         image: null as File | null,
     });
     const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -36,6 +37,7 @@ export default function AddTaskPage() {
             form.date !== originalData.date ||
             form.priority !== originalData.priority ||
             form.description !== originalData.description ||
+            form.status !== originalData.status ||
             form.image !== null
         );
     };
@@ -61,6 +63,7 @@ export default function AddTaskPage() {
                 const data = await res.json();
                 console.log('data: fetch task by id', data);
 
+
                 if (!res.ok) {
                     toast.error(data.message);
                     return;
@@ -71,15 +74,19 @@ export default function AddTaskPage() {
                     title: data.title || "",
                     date: data.date?.split("T")[0] || "",
                     priority: data.priority || "Moderate",
+                    status: data.status || "Not Started",
                     description: data.description || "",
                     image: null,
                 });
+                console.log("FORM STATUS:", form.status);
+                console.log("API STATUS:", data.status);
                 setPreviewImage(data.image || null);
                 setOriginalData({
                     title: data.title,
                     date: data.date?.split("T")[0],
                     priority: data.priority,
                     description: data.description,
+                    status: data.status,
                 });
                 setFetching(false);
 
@@ -158,7 +165,10 @@ export default function AddTaskPage() {
         setErrors({});
         setBlurErrors({});
 
-        const result = taskSchema.safeParse(form);
+        const result = taskSchema.safeParse({
+            ...form,
+            image: form.image || previewImage,
+        });
 
         if (!result.success) {
             const fieldErrors = result.error.flatten().fieldErrors;
@@ -167,7 +177,9 @@ export default function AddTaskPage() {
             return;
         }
         if (isEdit && !isChanged()) {
-            toast("No changes made");
+            toast("No changes made",{
+                id:"no-changes"
+            });
             setLoading(false);
             return;
         }
@@ -178,6 +190,7 @@ export default function AddTaskPage() {
             formData.append("date", form.date);
             formData.append("priority", form.priority);
             formData.append("description", form.description);
+            formData.append("status", form.status);
 
             if (form.image) {
                 formData.append("image", form.image);
@@ -272,22 +285,47 @@ export default function AddTaskPage() {
                 </div>
 
 
-                <div className="mb-4">
-                    <label className="block mb-2 font-medium">Priority</label>
-                    <div className="flex gap-6">
-                        {["Extreme", "Moderate", "Low"].map((level) => (
-                            <label key={level} className="flex items-center gap-2">
-                                <input
-                                    type="radio"
-                                    name="priority"
-                                    value={level}
-                                    checked={form.priority === level}
-                                    onChange={handleChange}
-                                />
-                                {level}
-                            </label>
-                        ))}
+                <div className="grid grid-cols-2 p-2 rounded border-gray-300 gap-6 shadow my-6">
+
+
+                    <div>
+                        <label className="block mb-2 font-medium">Priority</label>
+                        <div className="flex gap-6">
+                            {["Extreme", "Moderate", "Low"].map((level) => (
+                                <label key={level} className="flex items-center gap-2">
+                                    <input
+                                        type="radio"
+                                        name="priority"
+                                        value={level}
+                                        checked={form.priority === level}
+                                        onChange={handleChange}
+                                    />
+                                    {level}
+                                </label>
+                            ))}
+                        </div>
                     </div>
+
+
+                    {isEdit && (
+                        <div>
+                            <label className="block mb-2 font-medium">Status</label>
+                            <div className="flex gap-6">
+                                {["Not Started", "In-Progress", "Completed"].map((status) => (
+                                    <label key={status} className="flex items-center gap-2">
+                                        <input
+                                            type="radio"
+                                            name="status"
+                                            value={status}
+                                            checked={form.status === status}
+                                            onChange={handleChange}
+                                        />
+                                        {status}
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
 
@@ -341,7 +379,7 @@ export default function AddTaskPage() {
                                 accept="image/*"
                                 onChange={(e) => {
                                     handleImage(e);
-                                    e.target.value = ""; 
+                                    e.target.value = "";
                                 }}
                                 className="hidden"
                             />

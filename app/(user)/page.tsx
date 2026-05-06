@@ -72,7 +72,16 @@ export default async function Home() {
 
             {isEmpty ? (
                 <div className="flex flex-1 items-center justify-center">
-                    <AddTaskButton />
+                    <div className="text-center">
+                        <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                            No tasks yet
+                        </h3>
+                        <p className="text-gray-500 mb-4">
+                            You haven't created any tasks. Start by adding your first task.
+                        </p>
+
+                        <AddTaskButton />
+                    </div>
                 </div>
             ) : (
                 <div className="grid grid-cols-3 gap-6 flex-1">
@@ -100,13 +109,19 @@ export default async function Home() {
                             notStarted={stats.notStarted}
                         />
 
-                        <div className="bg-white p-6 rounded-2xl shadow-sm ">
+                        <div className="bg-white p-6 rounded-2xl shadow-sm h-full ">
                             <h3 className="font-semibold  flex items-center gap-2"><BiTask /> Completed Task</h3>
 
-                            <div className="flex flex-col gap-5">
-                                {completedTasks.map((task: any) => (
-                                    <TaskCard key={task._id} task={task} />
-                                ))}
+                            <div className="flex flex-col gap-5 h-full ">
+                                {completedTasks.length === 0 ? (
+                                    <p className="text-gray-500 flex justify-center items-center h-full text-sm">
+                                        No tasks completed yet.
+                                    </p>
+                                ) : (
+                                    completedTasks.map((task: any) => (
+                                        <TaskCard key={task._id} task={task} />
+                                    ))
+                                )}
                             </div>
                         </div>
 

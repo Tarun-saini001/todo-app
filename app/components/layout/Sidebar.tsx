@@ -3,6 +3,7 @@
 import { logoutUser } from "@/app/actions/auth.actions";
 import { usePathname, useRouter } from "next/navigation";
 import { FiLogOut } from "react-icons/fi";
+import LogoutButton from "../ui/LogoutButton";
 
 export default function Sidebar({ user }: any) {
     const router = useRouter();
@@ -43,15 +44,7 @@ export default function Sidebar({ user }: any) {
                 </nav>
             </div>
 
-            <form action={logoutUser}>
-                <button
-                    type="submit"
-                    className="flex w-full px-3 py-2 rounded-md items-center font-semibold cursor-pointer gap-4 hover:bg-white hover:text-[#FF6767] transition"
-                >
-                    <FiLogOut />
-                    Logout
-                </button>
-            </form>
+            <LogoutButton />
         </aside>
     );
 }

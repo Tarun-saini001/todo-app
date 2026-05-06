@@ -14,7 +14,7 @@ export async function GET(
 ) {
     try {
         const user = await getUser();
-        const {id}= await params;
+        const { id } = await params;
 
         if (!user) {
             return NextResponse.json(
@@ -44,7 +44,7 @@ export async function GET(
     } catch (error) {
         console.log("get task error:", error);
         return NextResponse.json(
-            { message: messages.SOMETHNG_WENT_WRONG},
+            { message: messages.SOMETHNG_WENT_WRONG },
             { status: 500 }
         );
     }
@@ -53,11 +53,11 @@ export async function GET(
 
 export async function PUT(
     req: NextRequest,
-    { params }: { params:Promise<{ id: string }>  }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const user = await getUser();
-         const { id } = await params; 
+        const { id } = await params;
 
         if (!user) {
             return NextResponse.json(
@@ -75,10 +75,11 @@ export async function PUT(
         const priority = formData.get("priority") as string;
         const description = formData.get("description") as string;
         const image = formData.get("image") as File | null;
+        const status = formData.get("status") as string;
 
         let imageUrl = null;
 
-        
+
         if (image && image.size > 0) {
             const uploaded: any = await uploadToCloudinary(image);
             imageUrl = uploaded.secure_url;
@@ -93,6 +94,7 @@ export async function PUT(
                 title,
                 date,
                 priority,
+                status,
                 description,
                 ...(imageUrl && { image: imageUrl }),
             },
@@ -101,7 +103,7 @@ export async function PUT(
 
         if (!updatedTask) {
             return NextResponse.json(
-                { message: messages.TASK_NOT_FOUND},
+                { message: messages.TASK_NOT_FOUND },
                 { status: 404 }
             );
         }
