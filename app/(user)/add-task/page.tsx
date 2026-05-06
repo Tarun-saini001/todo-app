@@ -1,13 +1,18 @@
 "use client";
 
 import { taskSchema } from "@/app/validations/task";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function AddTaskPage() {
+    const searchParams = useSearchParams();
+    const taskId = searchParams.get("id");
 
+    const isEdit = Boolean(taskId);
     const router = useRouter();
+
+
 
     const [form, setForm] = useState({
         title: "",
@@ -16,10 +21,85 @@ export default function AddTaskPage() {
         description: "",
         image: null as File | null,
     });
-
+    const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [errors, setErrors] = useState<any>({});
-    const [blurErrors, setBlurErrors] = useState<any>({ undefined });
+    const [blurErrors, setBlurErrors] = useState<any>({});
     const [loading, setLoading] = useState(false);
+    const [fetching, setFetching] = useState(false);
+    const [originalData, setOriginalData] = useState<any>(null);
+
+    const isChanged = () => {
+        if (!originalData) return true;
+
+        return (
+            form.title !== originalData.title ||
+            form.date !== originalData.date ||
+            form.priority !== originalData.priority ||
+            form.description !== originalData.description ||
+            form.image !== null
+        );
+    };
+
+    useEffect(() => {
+        return () => {
+            if (previewImage?.startsWith("blob:")) {
+                URL.revokeObjectURL(previewImage);
+            }
+        };
+    }, [previewImage]);
+
+    useEffect(() => {
+        if (!taskId) return;
+
+        const fetchTask = async () => {
+            try {
+                setFetching(true)
+                const res = await fetch(`/api/task/${taskId}`, {
+                    credentials: "include",
+                });
+
+                const data = await res.json();
+                console.log('data: fetch task by id', data);
+
+                if (!res.ok) {
+                    toast.error(data.message);
+                    return;
+                }
+
+
+                setForm({
+                    title: data.title || "",
+                    date: data.date?.split("T")[0] || "",
+                    priority: data.priority || "Moderate",
+                    description: data.description || "",
+                    image: null,
+                });
+                setPreviewImage(data.image || null);
+                setOriginalData({
+                    title: data.title,
+                    date: data.date?.split("T")[0],
+                    priority: data.priority,
+                    description: data.description,
+                });
+                setFetching(false);
+
+            } catch (err) {
+                console.log(err);
+                toast.error("Failed to load task");
+                setFetching(false);
+            }
+        };
+
+        fetchTask();
+    }, [taskId]);
+
+    if (isEdit && fetching) {
+        return (
+            <div className="h-full flex items-center justify-center">
+                <p className="text-gray-500">Loading task...</p>
+            </div>
+        );
+    }
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -40,7 +120,11 @@ export default function AddTaskPage() {
 
     const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files?.[0]) {
-            setForm({ ...form, image: e.target.files[0] });
+            const file = e.target.files[0];
+
+            setForm({ ...form, image: file });
+
+            setPreviewImage(URL.createObjectURL(file));
         }
     };
 
@@ -82,7 +166,11 @@ export default function AddTaskPage() {
             setLoading(false);
             return;
         }
-
+        if (isEdit && !isChanged()) {
+            toast("No changes made");
+            setLoading(false);
+            return;
+        }
         try {
 
             const formData = new FormData();
@@ -94,8 +182,9 @@ export default function AddTaskPage() {
             if (form.image) {
                 formData.append("image", form.image);
             }
-            const res = await fetch("http://localhost:3000/api/task", {
-                method: "POST",
+            const res = await fetch(
+                isEdit ? `http://localhost:3000/api/task/${taskId}` : "http://localhost:3000/api/task", {
+                method: isEdit ? "PUT" : "POST",
                 body: formData,
             });
 
@@ -103,13 +192,15 @@ export default function AddTaskPage() {
             console.log('data: ', data);
 
             if (!res.ok) {
-                setErrors(data.errors?.fieldErrors || { });
+                setErrors(data.errors?.fieldErrors || {});
                 toast.error(data.message);
                 setLoading(false);
                 return;
             }
 
-            toast.success("Task created successfully");
+            toast.success(
+                isEdit ? "Task updated successfully" : "Task created successfully"
+            );
             router.push("/");
         } catch (err) {
             console.log(err);
@@ -118,13 +209,14 @@ export default function AddTaskPage() {
             setLoading(false);
         }
     };
+    // const previewImage = newImagePreview || currentImage;
 
     return (
         <div className="h-full flex flex-col">
 
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-semibold border-b-2 border-[#FF6767] inline-block">
-                    Add New Task
+                    {isEdit ? "Edit Task" : "Add New Task"}
                 </h2>
 
                 <button
@@ -147,7 +239,7 @@ export default function AddTaskPage() {
                         value={form.title}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className="w-full border text-gray-400 border-gray-300 rounded-md px-3 py-2 outline-none 
+                        className="w-full border text-gray-800 border-gray-300 rounded-md px-3 py-2 outline-none 
                         focus:ring-2 focus:ring-[#FF6767] focus:border-[#FF6767] 
                         transition"
                         placeholder="Enter task title..."
@@ -168,7 +260,7 @@ export default function AddTaskPage() {
                         value={form.date}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className="w-full border text-gray-400 border-gray-300 rounded-md px-3 py-2 outline-none 
+                        className="w-full border text-gray-800 border-gray-300 rounded-md px-3 py-2 outline-none 
                    focus:ring-2 focus:ring-[#FF6767] focus:border-[#FF6767] 
                    transition"
                     />
@@ -231,13 +323,29 @@ export default function AddTaskPage() {
                         <label className="block mb-1 font-medium">
                             Upload Image
                         </label>
+                        <label className="cursor-pointer block">
+                            {previewImage ? (
+                                <img
+                                    src={previewImage}
+                                    alt="Selected task image"
+                                    className="w-full h-40 object-cover rounded"
+                                />
+                            ) : (
+                                <div className="w-full h-40 border border-dashed flex items-center justify-center text-gray-400">
+                                    Click to upload image
+                                </div>
+                            )}
 
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImage}
-                            className="w-full h-40 border  border-gray-300  p-2  rounded-md"
-                        />
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                    handleImage(e);
+                                    e.target.value = ""; 
+                                }}
+                                className="hidden"
+                            />
+                        </label>
 
                         {errors?.image && (
                             <p className="text-red-500 text-sm">

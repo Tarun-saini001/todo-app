@@ -12,9 +12,9 @@ export default function Sidebar({ user }: any) {
         { label: "Dashboard", path: "/" },
         { label: "Vital Task", path: "/vital-task" },
         { label: "My Task", path: "/my-task" },
-        { label: "Task Categories", path: "/categories" },
-        { label: "Settings", path: "/settings" },
-        { label: "Help", path: "/help" },
+        // { label: "Task Categories", path: "/categories" },
+        // { label: "Settings", path: "/settings" },
+        // { label: "Help", path: "/help" },
     ];
 
     return (

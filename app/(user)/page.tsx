@@ -101,7 +101,7 @@ export default async function Home() {
                         />
 
                         <div className="bg-white p-6 rounded-2xl shadow-sm ">
-                            <h3 className="font-semibold mb-4 flex items-center gap-2"><BiTask /> Completed Task</h3>
+                            <h3 className="font-semibold  flex items-center gap-2"><BiTask /> Completed Task</h3>
 
                             <div className="flex flex-col gap-5">
                                 {completedTasks.map((task: any) => (

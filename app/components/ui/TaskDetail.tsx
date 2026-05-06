@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
@@ -14,7 +15,14 @@ interface Task {
     createdAt: string;
 }
 
-export default function TaskDetail({ task }: { task: Task | null }) {
+export default function TaskDetail({
+    task,
+    onDelete,
+}: {
+    task: Task | null;
+    onDelete: () => void;
+}) {
+    const router = useRouter();
     if (!task) {
         return (
             <div className="h-full flex items-center justify-center text-gray-400">
@@ -26,7 +34,7 @@ export default function TaskDetail({ task }: { task: Task | null }) {
     return (
         <div className="flex flex-col h-full">
 
-           
+
             <div className="flex-1 overflow-y-auto pr-2">
 
                 <div className="flex gap-4 mb-5">
@@ -84,7 +92,7 @@ export default function TaskDetail({ task }: { task: Task | null }) {
                     </div>
                 </div>
 
-                
+
                 <div>
                     <h4 className="font-medium text-sm mb-2">Description</h4>
                     <p className="text-sm text-gray-600 leading-relaxed">
@@ -93,14 +101,18 @@ export default function TaskDetail({ task }: { task: Task | null }) {
                 </div>
             </div>
 
-            
+
             <div className="flex justify-end gap-3 pt-4  mt-4 bg-white">
-                <button className="bg-[#FF6767] cursor-pointer text-white text-center rounded flex justify-center text-lg items-center h-7 w-7">
-                   <MdDelete />
+                <button
+                    onClick={onDelete}
+                    className="bg-[#FF6767] cursor-pointer text-white text-center rounded flex justify-center text-lg items-center h-7 w-7">
+                    <MdDelete />
                 </button>
 
-                <button className="bg-[#FF6767] cursor-pointer text-white text-center rounded flex justify-center items-center h-7 w-7">
-                   <FaRegEdit />
+                <button
+                    onClick={() => router.push(`/add-task?id=${task._id}`)}
+                    className="bg-[#FF6767] cursor-pointer text-white text-center rounded flex justify-center items-center h-7 w-7">
+                    <FaRegEdit />
                 </button>
             </div>
         </div>

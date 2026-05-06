@@ -11,5 +11,8 @@ export const messages = {
     FETCH_USER_SUCCESS:"User fetched successfully",
     VALIDATION_ERROR:"Validation error",
     TASK_CREATED:"Task created successfully",
-    SERVER_ERROR:"Server error"
+    SERVER_ERROR:"Server error",
+    TASK_DELETE:"Task deleted successfully",
+    TASK_NOT_FOUND:"Task not found",
+    TASK_UPDATED:"Task updated successfully"
 }
