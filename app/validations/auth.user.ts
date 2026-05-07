@@ -56,3 +56,38 @@ export const loginSchema = z.object({
         .trim()
         .nonempty("Password is required"),
 });
+
+
+export const profileSchema =  z.object({
+     firstName: z.string()
+        .trim()
+        .nonempty("First name is required")
+        .min(2, "Name must be at least 2 characters")
+        .max(15, "First name cannot exceed 15 characters")
+        .regex(/^[A-Z]/, "Name must start with a capital letter")
+        .regex(/^[A-Za-z\s]*$/, "Name must contain only letters"),
+
+    lastName: z.string()
+        .trim()
+        .nonempty("Last name is required")
+        .min(2, "Name must be at least 2 characters")
+         .max(15, "Last name cannot exceed 15 characters")
+        .regex(/^[A-Z]/, "Name must start with a capital letter")
+        .regex(/^[A-Za-z\s]*$/, "Name must contain only letters"),
+
+    userName: z.string()
+        .trim()
+        .nonempty("User name is required")
+        .min(3, "Name must be at least 3 characters")
+        .max(15, "Username cannot exceed 15 characters")
+        .regex(
+            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&]).+$/,
+            "Username must contain at least one letter, one number, and one special character"
+        ),
+    email: z
+        .string()
+        .trim()
+        .nonempty("Email is required")
+         .max(25, "Email cannot exceed 25 characters")
+        .email("Invalid email format"),
+})

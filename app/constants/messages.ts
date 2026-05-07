@@ -15,5 +15,8 @@ export const messages = {
     TASK_DELETE:"Task deleted successfully",
     TASK_NOT_FOUND:"Task not found",
     TASK_UPDATED:"Task updated successfully",
-    STATUS_UPDATED:"Status update successfully"
+    STATUS_UPDATED:"Status update successfully",
+    PROFILE_UPDATED:"Profile updated successfully",
+    PROFILE_IMAGE_UPDATED:"Profile image updated",
+    PLS_SELECT_IMAGE:"Please select an image",
 }

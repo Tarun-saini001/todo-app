@@ -3,12 +3,15 @@
 import bcrypt from "bcryptjs"
 import { User } from "@/app/lib/models/user"
 import connectDB from "../lib/db"
-import { loginSchema, registerSchema } from "../validations/auth.user";
+import { loginSchema, profileSchema, registerSchema } from "../validations/auth.user";
 import { messages } from "../constants/messages";
 import { generateAccessToken, generateRefreshToken } from "../lib/utils";
 import RefreshTokenModel from "../lib/models/token";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { getUser } from "../lib/auth";
+import cloudinary from "../lib/cloudnary";
+import { revalidatePath } from "next/cache";
 
 export async function registerUser(prevState: any, formData: FormData) {
 
@@ -168,4 +171,127 @@ export async function logoutUser() {
     console.log('cookieStore: after logout action', cookieStore);
     redirect("/sign-in");
     // return { success: true, message: messages.LOGOUT_SUCCESSFULLY };
+}
+
+
+
+
+export async function updateProfile(formData: FormData) {
+    try {
+        await connectDB();
+
+        const currentUser = await getUser();
+
+        if (!currentUser) {
+            return {
+                success: false,
+                message: messages.UNAUTHERISED,
+            };
+        }
+
+        const data = {
+            firstName: formData.get("firstName"),
+            lastName: formData.get("lastName"),
+            userName: formData.get("userName"),
+            email: formData.get("email"),
+        };
+
+        const validated = profileSchema.safeParse(data);
+
+        if (!validated.success) {
+            return {
+                success: false,
+                errors: validated.error.flatten().fieldErrors,
+            };
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            currentUser._id,
+            validated.data,
+            { new: true }
+        );
+
+        revalidatePath("/");
+        revalidatePath("/profile");
+
+        return {
+            success: true,
+            message: messages.PROFILE_UPDATED,
+            user: JSON.parse(JSON.stringify(updatedUser)),
+        };
+
+    } catch (error) {
+        console.log("Failed to update profile:", error);
+
+        return {
+            success: false,
+            message: messages.SOMETHNG_WENT_WRONG,
+        };
+    }
+}
+
+export async function updateProfileImage(formData: FormData) {
+    try {
+        await connectDB();
+
+        const currentUser = await getUser();
+
+        if (!currentUser) {
+            return {
+                success: false,
+                message: messages.UNAUTHERISED,
+            };
+        }
+
+        const removeImage = formData.get("removeImage");
+
+        let profilePic = currentUser.profilePic || "";
+
+        if (removeImage === "true") {
+            profilePic = "";
+        } else {
+            const image = formData.get("image") as File;
+
+            if (!image || image.size === 0) {
+                return {
+                    success: false,
+                    message: messages.PLS_SELECT_IMAGE
+                };
+            }
+
+            const bytes = await image.arrayBuffer();
+            const buffer = Buffer.from(bytes);
+
+            const base64 = `data:${image.type};base64,${buffer.toString("base64")}`;
+
+            const uploaded = await cloudinary.uploader.upload(base64, {
+                folder: "profile",
+            });
+
+            profilePic = uploaded.secure_url;
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            currentUser._id,
+            { profilePic },
+            { new: true }
+        );
+
+        revalidatePath("/");
+        revalidatePath("/profile");
+
+        return {
+            success: true,
+            message: messages.PROFILE_IMAGE_UPDATED,
+            user: JSON.parse(JSON.stringify(updatedUser)),
+        };
+
+    } catch (error) {
+        console.log("Failed to update profile image:", error);
+
+        return {
+            success: false,
+            message: messages.SOMETHNG_WENT_WRONG,
+        };
+    }
 }
