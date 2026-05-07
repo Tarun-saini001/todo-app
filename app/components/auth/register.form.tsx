@@ -1,7 +1,7 @@
 "use client";
 
 import { registerUser } from "@/app/actions/auth.actions";
-import { useActionState, useState } from "react";
+import { useActionState, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { registerSchema } from "@/app/validations/auth.user";
@@ -19,6 +19,8 @@ const initialState: RegisterState = {
 
 export default function RegisterForm() {
 
+    const router = useRouter();
+    const [isPending, startTransition] = useTransition();
     // const [showPassword, setShowPassword] = useState(false);
     // const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [formData, setFormData] = useState({
@@ -31,7 +33,6 @@ export default function RegisterForm() {
     });
 
     const [blurErrors, setBlurErrors] = useState<RegisterState["errors"]>({});
-    const router = useRouter();
     const [state, formAction] = useActionState<RegisterState, FormData>(registerUser, initialState);
     const [serverMessage, setServerMessage] = useState("");
 
@@ -71,44 +72,91 @@ export default function RegisterForm() {
         }
     }, [state]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({
+
+    const validateForm = (data: typeof formData) => {
+        const result = registerSchema.safeParse(data);
+
+        if (!result.success) {
+            return result.error.flatten().fieldErrors;
+        }
+
+        return {};
+    };
+
+
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+const { name, value } = e.target;
+        const formattedValue =
+            name === "firstName" || name === "lastName"
+                ? value.charAt(0).toUpperCase() + value.slice(1)
+                : value;
+
+        const updatedForm = {
             ...formData,
-            [e.target.name]: e.target.value,
-        });
-        setBlurErrors((prev) => ({
-            ...prev,
-            [e.target.name]: "",
-        }));
+            [name]: formattedValue,
+        };
+
+        setFormData(updatedForm);
+
+
+        const errors = validateForm(updatedForm);
+
+        setBlurErrors(errors);
+
         setServerMessage("");
     };
 
-    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-        const fieldName = e.target.name;
-        const value = e.target.value;
 
-        const result = registerSchema.safeParse({
+    const handleBlur = (
+        e: React.FocusEvent<HTMLInputElement>
+    ) => {
+        const updatedForm = {
             ...formData,
-            [fieldName]: value,
-        });
+            [e.target.name]: e.target.value,
+        };
+
+        const errors = validateForm(updatedForm);
+
+        setBlurErrors(errors);
+    };
+
+
+    const handleSubmit = async (
+        e: React.FormEvent<HTMLFormElement>
+    ) => {
+        e.preventDefault();
+
+        setServerMessage("");
+
+        const result = registerSchema.safeParse(formData);
 
         if (!result.success) {
-            const fieldErrors = result.error.flatten().fieldErrors;
+            const errors =
+                result.error.flatten().fieldErrors;
 
-            setBlurErrors((prev) => ({
-                ...prev,
-                [fieldName]: fieldErrors[fieldName as keyof typeof fieldErrors],
-            }));
-        } else {
-            setBlurErrors((prev) => ({
-                ...prev,
-                [fieldName]: undefined,
-            }));
+            setBlurErrors(errors);
+
+            return;
         }
+
+        // clear errors
+        setBlurErrors({});
+
+        const submitData = new FormData();
+
+        Object.entries(formData).forEach(([key, value]) => {
+            submitData.append(key, value);
+        });
+
+        startTransition(() => {
+            formAction(submitData);
+        });
     };
 
     return (
-        <form action={formAction} className="space-y-2 h-auto">
+        <form onSubmit={handleSubmit} className="space-y-2 h-auto">
 
             <FormInput
                 name="firstName"
@@ -175,10 +223,10 @@ export default function RegisterForm() {
 
 
 
-            <div className="flex items-center gap-2 text-sm">
+            {/* <div className="flex items-center gap-2 text-sm">
                 <input type="checkbox" />
                 <span>I agree to all terms</span>
-            </div>
+            </div> */}
             {serverMessage && (
                 <p className="text-red-500 text-sm text-center">
                     {serverMessage}
@@ -189,7 +237,7 @@ export default function RegisterForm() {
                 type="submit"
                 className="w-full bg-[#FF6767] cursor-pointer text-white py-2 rounded-md hover:opacity-90"
             >
-                Create
+                Sign Up
             </button>
         </form>
     );

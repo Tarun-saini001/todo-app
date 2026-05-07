@@ -4,6 +4,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { updateProfile, updateProfileImage } from "@/app/actions/auth.actions";
 import { profileSchema } from "@/app/validations/auth.user";
+import GoBackButton from "../ui/GoBackButton";
 export default function ProfileClient({ user }: any) {
 
     const initialForm = {
@@ -191,49 +192,55 @@ export default function ProfileClient({ user }: any) {
     };
     return (
         <div className="bg-white rounded-2xl shadow-sm p-6 h-full overflow-y-auto">
+            <div className="flex justify-between items-start mb-8">
 
-            <div className="flex items-start gap-6 mb-8">
+                <div className="flex items-center gap-6">
 
-                <div className="flex flex-col items-center gap-3">
+                    <div className="flex flex-col items-center gap-3">
 
-                    <img
-                        src={preview || "/todoprofile.png"}
-                        alt="profile"
-                        className="w-28 h-28 rounded-full object-cover "
-                    />
-                    <div className="space-x-1">
-                        <label className="bg-[#FF6767] text-white px-2 py-1 rounded-md cursor-pointer text-sm">
-                            {user.profilePic ? "Change Image" : "Upload Image"}
+                        <img
+                            src={preview || "/todoprofile.png"}
+                            alt="profile"
+                            className="w-28 h-28 rounded-full object-cover border-2 border-gray-100 shadow-md"
+                        />
 
-                            <input
-                                type="file"
-                                accept="image/*"
-                                hidden
-                                onChange={handleImage}
-                            />
-                        </label>
-                        {(image || (user.profilePic && preview !== "/todoprofile.png")) && (
-                            <button
-                                type="button"
-                                onClick={removeImage}
-                                className="bg-gray-200 text-gray-700 px-2 cursor-pointer py-1 rounded-md text-sm hover:bg-gray-300"
-                            >
-                                Remove
-                            </button>
-                        )}
+                        <div className="flex gap-2">
+
+                            <label className="bg-[#FF6767] hover:bg-[#ff5252] transition text-white px-3 py-1.5 rounded-md cursor-pointer text-sm">
+                                {user.profilePic ? "Change Image" : "Upload Image"}
+
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    hidden
+                                    onChange={handleImage}
+                                />
+                            </label>
+
+                            {(image || (user.profilePic && preview !== "/todoprofile.png")) && (
+                                <button
+                                    type="button"
+                                    onClick={removeImage}
+                                    className="bg-gray-200 text-gray-700 px-3 py-1.5 rounded-md text-sm hover:bg-gray-300 transition cursor-pointer"
+                                >
+                                    Remove
+                                </button>
+                            )}
+                        </div>
                     </div>
 
+                    <div>
+                        <h2 className="text-2xl font-semibold text-gray-800">
+                            {initialForm.firstName} {initialForm.lastName}
+                        </h2>
+
+                        <p className="text-gray-500 mt-1">
+                            {initialForm.email}
+                        </p>
+                    </div>
                 </div>
 
-                <div>
-                    <h2 className="text-2xl font-semibold text-gray-800">
-                        {initialForm.firstName} {initialForm.lastName}
-                    </h2>
-
-                    <p className="text-gray-500 mt-1">
-                        {initialForm.email}
-                    </p>
-                </div>
+                <GoBackButton />
             </div>
 
             <div className="grid grid-cols-2 gap-6">

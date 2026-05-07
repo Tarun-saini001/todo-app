@@ -14,7 +14,7 @@ const Login = () => {
                 <p className="text-sm  mt-4">
                     Don't have an account?{" "}
                     <Link href="/sign-up" className="text-[#FF6767] cursor-pointer">
-                        Create One
+                        Sign Up
                     </Link>
                 </p>
             </div>

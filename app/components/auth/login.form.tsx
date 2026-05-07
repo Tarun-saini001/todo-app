@@ -1,7 +1,7 @@
 "use client"
 
 import { loginUser } from "@/app/actions/auth.actions";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { loginSchema } from "@/app/validations/auth.user";
 import toast from "react-hot-toast";
@@ -22,6 +22,7 @@ const initialState = {
 };
 
 export default function LoginForm() {
+    const [isPending, startTransition] = useTransition();
     const router = useRouter();
     // const [showPassword, setShowPassword] = useState(false);
 
@@ -79,7 +80,7 @@ export default function LoginForm() {
         });
         setBlurErrors((prev) => ({
             ...prev,
-            [e.target.name]: "",
+            [e.target.name]: undefined,
         }));
         setServerMessage("");
     };
@@ -109,9 +110,45 @@ export default function LoginForm() {
         }
     };
 
+    const handleSubmit = async (
+        e: React.FormEvent<HTMLFormElement>
+    ) => {
+        e.preventDefault();
+
+        setServerMessage("");
+
+
+        const result = loginSchema.safeParse(formData);
+
+        if (!result.success) {
+            const errors = result.error.flatten().fieldErrors;
+
+            setBlurErrors({
+                userName: errors.userName,
+                password: errors.password,
+            });
+
+            return;
+        }
+
+
+        setBlurErrors({});
+
+
+        const submitData = new FormData();
+
+        submitData.append("userName", formData.userName);
+        submitData.append("password", formData.password);
+
+
+        startTransition(() => {
+            formAction(submitData);
+        });
+    };
+
     return (
 
-        <form action={formAction} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
 
             {/* user name */}
             <FormInput
@@ -142,9 +179,10 @@ export default function LoginForm() {
             )}
             <button
                 type="submit"
+                disabled={isPending}
                 className="bg-[#FF6767] cursor-pointer text-white px-6 py-2 rounded-md hover:opacity-90 w-fit"
             >
-                Sign In
+                {isPending ? "Signing In..." : "Sign In"}
             </button>
         </form>
     )
