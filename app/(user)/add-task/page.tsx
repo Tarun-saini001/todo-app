@@ -5,6 +5,7 @@ import { taskSchema } from "@/app/validations/task";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { MdOutlineCloseFullscreen } from "react-icons/md";
 
 export default function AddTaskPage() {
     const searchParams = useSearchParams();
@@ -33,6 +34,7 @@ export default function AddTaskPage() {
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(false);
     const [originalData, setOriginalData] = useState<any>(null);
+    const [openPreview, setOpenPreview] = useState(false);
 
     const isChanged = () => {
         if (!originalData) return true;
@@ -117,7 +119,7 @@ export default function AddTaskPage() {
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
         const { name, value } = e.target;
-        
+
         const formattedValue =
             name === "title"
                 ? value.charAt(0).toUpperCase() + value.slice(1)
@@ -159,13 +161,20 @@ export default function AddTaskPage() {
 
 
     const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files?.[0]) {
-            const file = e.target.files[0];
+        const file = e.target.files?.[0];
 
-            setForm({ ...form, image: file });
-
-            setPreviewImage(URL.createObjectURL(file));
+        if (!file) return;
+        if (!file.type.startsWith("image/")) {
+            toast.error("Only image files are allowed");
+            return;
         }
+
+        setForm((prev) => ({
+            ...prev,
+            image: file,
+        }));
+
+        setPreviewImage(URL.createObjectURL(file));
     };
 
     const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -395,26 +404,57 @@ export default function AddTaskPage() {
                             Upload Image
                         </label>
                         <label className="cursor-pointer block">
-                            {previewImage ? (
-                                <img
-                                    src={previewImage}
-                                    alt="Selected task image"
-                                    className="w-full h-40 object-cover rounded"
-                                />
-                            ) : (
-                                <div className="w-full h-40 border border-dashed flex items-center justify-center text-gray-400">
-                                    Click to upload image
+                            <div className="w-full h-40 border border-dashed rounded-xl overflow-hidden  flex  items-center justify-center">
+
+                                {previewImage ? (
+                                    <img
+                                        src={previewImage}
+                                        alt="Selected task image"
+                                        className="w-full h-full object-cover"
+                                    />
+
+                                ) : (
+                                    <p className="text-gray-400">
+                                        Click to upload image
+                                    </p>
+                                )}
+
+                            </div>
+                            {previewImage && (
+                                <div className="flex items-center gap-4 mt-2">
+
+                                    <button
+                                        type="button"
+                                        onClick={() => setOpenPreview(true)}
+                                        className="underline text-[#FF6767] text-sm cursor-pointer"
+                                    >
+                                        View Image
+                                    </button>
+
+                                    <label className="underline text-gray-600 text-sm cursor-pointer">
+                                        Change
+
+                                        <input
+                                            type="file"
+                                            accept=".png,.jpg,.jpeg,.webp"
+                                            onChange={(e) => {
+                                                handleImage(e);
+                                                e.target.value = "";
+                                            }}
+                                            className="hidden"
+                                        />
+                                    </label>
                                 </div>
                             )}
 
                             <input
                                 type="file"
-                                accept="image/*"
+                                accept=".png,.jpg,.jpeg,.webp"
                                 onChange={(e) => {
                                     handleImage(e);
                                     e.target.value = "";
                                 }}
-                                className="hidden"
+                                className="hidden "
                             />
                         </label>
 
@@ -430,11 +470,32 @@ export default function AddTaskPage() {
                 <button
                     onClick={handleSubmit}
                     disabled={loading}
-                    className="bg-[#FF6767] cursor-pointer text-white px-6 py-2 rounded-md"
+                    className="bg-[#FF6767] border cursor-pointer text-white px-6 py-2 rounded-md"
                 >
                     {loading ? "Creating..." : "Done"}
                 </button>
             </div>
+            {openPreview && previewImage && (
+                <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-6">
+
+                    <div className="relative bg-white rounded-2xl p-4 max-w-4xl w-full">
+
+                        <button
+                            type="button"
+                            onClick={() => setOpenPreview(false)}
+                            className="absolute top-3 right-3  text-black text-lg w-8 h-8 rounded-full cursor-pointer"
+                        >
+                            <MdOutlineCloseFullscreen />
+                        </button>
+
+                        <img
+                            src={previewImage}
+                            alt="Preview"
+                            className="w-full max-h-[80vh] object-contain rounded-xl"
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
