@@ -87,7 +87,7 @@ export default function TaskDetail({
 
                             <p className="text-gray-400 text-xs">
                                 Created:{" "}
-                                {new Date(task.createdAt).toLocaleDateString()}
+                                {new Date(task.createdAt).toLocaleDateString("en-US")}
                             </p>
                         </div>
                     </div>
@@ -96,7 +96,7 @@ export default function TaskDetail({
 
                 <div>
                     <h4 className="font-medium text-sm mb-2">Description</h4>
-                    <p className="text-sm text-gray-600 leading-relaxed">
+                    <p className="text-sm text-gray-600 wrap-break-word leading-relaxed">
                         {task.description}
                     </p>
                 </div>

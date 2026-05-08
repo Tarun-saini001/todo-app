@@ -64,8 +64,8 @@ export default function TaskCard({ task }: { task: Task }) {
                 onClick={() => router.push(`/task/${task._id}`)}
                 className="bg-white rounded-2xl p-4 cursor-pointer shadow-sm border border-gray-300 hover:shadow-md transition flex justify-between gap-4">
 
-                {/* left */}
-                <div className="flex flex-col justify-between flex-1">
+
+                <div className="flex flex-col justify-between flex-1 min-w-0">
                     <div>
                         <h3 className="font-semibold text-sm text-gray-800">
                             {task.title}
@@ -94,7 +94,7 @@ export default function TaskCard({ task }: { task: Task }) {
                 </div>
 
 
-                <div className="flex flex-col items-center gap-2">
+                <div className="flex flex-col items-center gap-2  flex-shrink-0">
                     {task.image && (
                         <div className="w-[70px] h-[70px] relative">
                             <Image
@@ -109,7 +109,10 @@ export default function TaskCard({ task }: { task: Task }) {
 
                     {next && (
                         <button
-                            onClick={handleClick}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleClick();
+                            }}
                             className="text-xs  text-[#FF6767] underline cursor-pointer px-2 py-1 rounded"
                         >
                             {next === "Completed" ? "Complete" : "Start"}

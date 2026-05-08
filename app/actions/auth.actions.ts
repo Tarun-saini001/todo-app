@@ -162,15 +162,37 @@ export async function loginUser(prevState: any, formData: FormData) {
 }
 
 
+// export async function logoutUser() {
+//     console.log("inside logout action");
+//     const cookieStore = await cookies();
+
+//     cookieStore.delete("accessToken");
+//     cookieStore.delete("refreshToken");
+//     console.log('cookieStore: after logout action', cookieStore);
+//     redirect("/sign-in");
+//     // return { success: true, message: messages.LOGOUT_SUCCESSFULLY };
+// }
+
+
 export async function logoutUser() {
-    console.log("inside logout action");
+
     const cookieStore = await cookies();
+
+    const refreshToken =
+        cookieStore.get("refreshToken")?.value;
+
+    await connectDB();
+
+    if (refreshToken) {
+        await RefreshTokenModel.deleteOne({
+            refreshToken,
+        });
+    }
 
     cookieStore.delete("accessToken");
     cookieStore.delete("refreshToken");
-    console.log('cookieStore: after logout action', cookieStore);
+
     redirect("/sign-in");
-    // return { success: true, message: messages.LOGOUT_SUCCESSFULLY };
 }
 
 
