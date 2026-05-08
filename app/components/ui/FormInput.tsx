@@ -45,7 +45,7 @@ export default function FormInput({
                 onChange={onChange}
                 onBlur={onBlur}
                 placeholder={placeholder}
-                className="w-full h-10 border pl-10 pr-10 rounded-md p-2 outline-none focus:border-transparent focus:ring-2 focus:ring-[#FF6767]"
+                className="w-full h-10 cursor-pointer border pl-10 pr-10 rounded-md p-2 outline-none focus:border-transparent focus:ring-2 focus:ring-[#FF6767]"
             />
 
             {isPassword && (

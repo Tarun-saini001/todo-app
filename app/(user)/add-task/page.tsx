@@ -117,10 +117,20 @@ export default function AddTaskPage() {
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
         const { name, value } = e.target;
-        const updatedForm = { ...form, [name]: value };
+        
+        const formattedValue =
+            name === "title"
+                ? value.charAt(0).toUpperCase() + value.slice(1)
+                : value;
+
+        const updatedForm = {
+            ...form,
+            [name]: formattedValue,
+        };
+
         setForm(updatedForm);
 
-        
+
         const result = taskSchema.safeParse(updatedForm);
 
         if (!result.success) {
@@ -255,8 +265,8 @@ export default function AddTaskPage() {
                     {isEdit ? "Edit Task" : "Add New Task"}
                 </h2>
 
-            
-                <GoBackButton/>
+
+                <GoBackButton />
             </div>
 
 
@@ -272,7 +282,7 @@ export default function AddTaskPage() {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         maxLength={15}
-                        className="w-full border text-gray-800 border-gray-300 rounded-md px-3 py-2 outline-none 
+                        className="w-full border cursor-pointer text-gray-800 border-gray-300 rounded-md px-3 py-2 outline-none 
                         focus:ring-2 focus:ring-[#FF6767] focus:border-[#FF6767] 
                         transition"
                         placeholder="Enter task title..."
@@ -293,7 +303,7 @@ export default function AddTaskPage() {
                         value={form.date}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className="w-full border text-gray-800 border-gray-300 rounded-md px-3 py-2 outline-none 
+                        className="w-full border cursor-pointer text-gray-800 border-gray-300 rounded-md px-3 py-2 outline-none 
                    focus:ring-2 focus:ring-[#FF6767] focus:border-[#FF6767] 
                    transition"
                     />
@@ -312,13 +322,14 @@ export default function AddTaskPage() {
                         <label className="block mb-2 font-medium">Priority</label>
                         <div className="flex gap-6">
                             {["Extreme", "Moderate", "Low"].map((level) => (
-                                <label key={level} className="flex items-center gap-2">
+                                <label key={level} className="flex  items-center gap-2">
                                     <input
                                         type="radio"
                                         name="priority"
                                         value={level}
                                         checked={form.priority === level}
                                         onChange={handleChange}
+                                        className="cursor-pointer"
                                     />
                                     {level}
                                 </label>
@@ -332,13 +343,14 @@ export default function AddTaskPage() {
                             <label className="block mb-2 font-medium">Status</label>
                             <div className="flex gap-6">
                                 {["Not Started", "In-Progress", "Completed"].map((status) => (
-                                    <label key={status} className="flex items-center gap-2">
+                                    <label key={status} className="flex cursor-pointer items-center gap-2">
                                         <input
                                             type="radio"
                                             name="status"
                                             value={status}
                                             checked={form.status === status}
                                             onChange={handleChange}
+                                            className="cursor-pointer"
                                         />
                                         {status}
                                     </label>
@@ -360,7 +372,7 @@ export default function AddTaskPage() {
                             value={form.description}
                             maxLength={250}
                             onChange={handleChange}
-                            className="w-full h-40 border  border-gray-300 rounded-md px-3 py-2 outline-none 
+                            className="w-full h-40 border cursor-pointer border-gray-300 rounded-md px-3 py-2 outline-none 
                    focus:ring-2 focus:ring-[#FF6767] focus:border-[#FF6767] 
                    transition"
                             placeholder="Start writing here..."

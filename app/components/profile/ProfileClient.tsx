@@ -206,7 +206,7 @@ export default function ProfileClient({ user }: any) {
 
                         <div className="flex gap-2">
 
-                            <label className="bg-[#FF6767] hover:bg-[#ff5252] transition text-white px-3 py-1.5 rounded-md cursor-pointer text-sm">
+                            <label className="bg-[#FF6767]  hover:bg-[#ff5252] transition text-white px-3 py-1.5 rounded-md cursor-pointer text-sm">
                                 {user.profilePic ? "Change Image" : "Upload Image"}
 
                                 <input
@@ -257,7 +257,7 @@ export default function ProfileClient({ user }: any) {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         maxLength={15}
-                        className="w-full border rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-[#FF6767] focus:border-transparent"
+                        className="w-full border rounded-md cursor-pointer px-3 py-2 outline-none focus:ring-2 focus:ring-[#FF6767] focus:border-transparent"
                     />
 
                     {(errors?.firstName?.[0] || blurErrors?.firstName?.[0]) && (
@@ -279,7 +279,7 @@ export default function ProfileClient({ user }: any) {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         maxLength={15}
-                        className="w-full border rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-[#FF6767] focus:border-transparent"
+                        className="w-full border rounded-md cursor-pointer px-3 py-2 outline-none focus:ring-2 focus:ring-[#FF6767] focus:border-transparent"
                     />
 
                     {(errors?.lastName?.[0] || blurErrors?.lastName?.[0]) && (
@@ -301,7 +301,7 @@ export default function ProfileClient({ user }: any) {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         maxLength={15}
-                        className="w-full border rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-[#FF6767] focus:border-transparent"
+                        className="w-full border rounded-md cursor-pointer px-3 py-2 outline-none focus:ring-2 focus:ring-[#FF6767] focus:border-transparent"
                     />
 
                     {(errors?.userName?.[0] || blurErrors?.userName?.[0]) && (
@@ -323,7 +323,7 @@ export default function ProfileClient({ user }: any) {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         maxLength={25}
-                        className="w-full border rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-[#FF6767] focus:border-transparent"
+                        className="w-full border cursor-pointer rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-[#FF6767] focus:border-transparent"
                     />
                     {(errors?.email?.[0] || blurErrors?.email?.[0]) && (
                         <p className="text-red-500 text-sm mt-1">

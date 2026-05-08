@@ -21,7 +21,7 @@ export default function Navbar({ user }: { user: any }) {
                 <input
                     type="text"
                     placeholder="Search your task here..."
-                    className="w-full px-4 py-1 shadow rounded-lg  outline-none 
+                    className="w-full cursor-pointer px-4 py-1 shadow rounded-lg  outline-none 
                    focus:ring-2 focus:ring-[#FF6767] focus:border-[#FF6767] 
                    transition"
                 />

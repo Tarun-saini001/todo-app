@@ -6,8 +6,8 @@ export const taskSchema = z.object({
         .nonempty("Title is required")
         .min(2, "Title must be at least 2 characters")
         .max(15, "Title must be at most 15 characters")
-        .regex(/^[A-Z]/, "Title must start with a capital letter")
-        .regex(/^[A-Za-z\s]*$/, "Title must contain only letters"),
+        .regex(/^[A-Z]/, "Title must start with a capital letter"),
+        // .regex(/^[A-Za-z0-9\s]*$/, "Title must contain only letters and numbers"),
 
     date: z.string().min(1, "Date is required"),
 
