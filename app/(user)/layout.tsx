@@ -23,7 +23,7 @@ export default async function UserLayout({
             <Navbar user={user} />
 
 
-            <div className="flex flex-1 overflow-hidden min-h-0">
+            <div className="flex flex-1 overflow-hidden min-h-0 ">
                 <Sidebar user={user} />
 
                 <main className="flex-1 p-6 overflow-hidden min-h-0">

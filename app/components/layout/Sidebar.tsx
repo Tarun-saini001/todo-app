@@ -11,46 +11,65 @@ export default function Sidebar({ user }: any) {
         { label: "Dashboard", path: "/" },
         { label: "Vital Task", path: "/vital-task" },
         { label: "My Task", path: "/my-task" },
-        { label: "Profile", path: "/profile" }
+        { label: "Profile", path: "/profile" },
     ];
 
     return (
-        <aside className="w-64 bg-[#FF6767] text-white flex flex-col justify-between p-4">
-            <div>
-                <div className="flex flex-col items-center mb-6">
+        <aside className="w-65 flex flex-col">
 
-                    <img
-                        src={user?.profilePic || "/todoprofile.png"}
-                        alt="profile"
-                        className="w-20 h-20 rounded-full object-cover border-2 border-gray-100 shadow-md"
-                    />
+            
+            <div className="h-14 bg-gray-100 shrink-0" />
 
-                    <h3 className="font-semibold mt-3 text-center">
-                        {user?.firstName} {user?.lastName}
-                    </h3>
+           
+            <div className="flex-1 bg-[#FF6767] rounded-tr-3xl relative px-5 pb-5 pt-14 flex flex-col justify-between">
 
-                    <p className="text-sm opacity-80 text-center break-all">
-                        {user?.email}
-                    </p>
+                
+                <div>
+
+                    <div className="absolute -top-10 left-1/2 -translate-x-1/2">
+
+                        <div className="w-24 h-24 rounded-full bg-white p-1 shadow-lg">
+
+                            <img
+                                src={user?.profilePic || "/todoprofile.png"}
+                                alt="profile"
+                                className="w-full h-full rounded-full object-cover"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="mt-8 text-center text-white">
+
+                        <h3 className="font-semibold text-lg">
+                            {user?.firstName} {user?.lastName}
+                        </h3>
+
+                        <p className="text-sm opacity-90 break-all">
+                            {user?.email}
+                        </p>
+                    </div>
+
+                
+                    <nav className="mt-8 space-y-3">
+
+                        {navItems.map((item) => (
+                            <SidebarItem
+                                key={item.path}
+                                label={item.label}
+                                active={
+                                    item.path === "/"
+                                        ? pathname === "/" || pathname === "/add-task"
+                                        : pathname.startsWith(item.path)
+                                }
+                                onClick={() => router.push(item.path)}
+                            />
+                        ))}
+                    </nav>
                 </div>
 
-                <nav className="space-y-3">
-                    {navItems.map((item) => (
-                        <SidebarItem
-                            key={item.path}
-                            label={item.label}
-                            active={
-                                item.path === "/"
-                                    ? (pathname === "/" || pathname === "/add-task")
-                                    : pathname.startsWith(item.path)
-                            }
-                            onClick={() => router.push(item.path)}
-                        />
-                    ))}
-                </nav>
+               
+               <span className="text-white"><LogoutButton /></span> 
             </div>
-
-            <LogoutButton />
         </aside>
     );
 }
@@ -67,10 +86,12 @@ function SidebarItem({
     return (
         <div
             onClick={onClick}
-            className={`cursor-pointer px-3 py-2 rounded-md transition ${active
-                ? "bg-white text-[#FF6767] font-semibold"
-                : "hover:bg-white hover:text-[#FF6767]"
-                }`}
+            className={`cursor-pointer px-4 py-3 rounded-xl transition text-base
+            ${
+                active
+                    ? "bg-white text-[#FF6767] font-semibold shadow-sm"
+                    : "text-white hover:bg-white hover:text-[#FF6767]"
+            }`}
         >
             {label}
         </div>

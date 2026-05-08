@@ -13,7 +13,7 @@ export default function Navbar({ user }: { user: any }) {
     }, []);
 
     return (
-        <div className="flex items-center justify-between px-6 py-4 bg-white shadow">
+        <div className="flex items-center justify-between px-6 py-4 bg-white ">
 
             <div className="text-[#FF6767] text-2xl font-bold ">Dash<span className="text-black">board</span></div>
 
