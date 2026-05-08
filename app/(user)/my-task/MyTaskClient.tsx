@@ -14,9 +14,15 @@ export default function MyTasksClient({
     emptyMessage = "You don't have any tasks yet.",
     showAddButton = false,
 }: any) {
-
+    
     const router = useRouter();
-
+    
+    const [tasks, setTasks] = useState(initialTasks);
+    const [selectedTask, setSelectedTask] = useState(
+        initialTasks?.[0] || null
+    );
+    const [loading, setLoading] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
 
     if (!initialTasks || initialTasks.length === 0) {
         return (
@@ -42,12 +48,6 @@ export default function MyTasksClient({
         );
     }
 
-    const [tasks, setTasks] = useState(initialTasks);
-    const [selectedTask, setSelectedTask] = useState(
-        initialTasks?.[0] || null
-    );
-    const [loading, setLoading] = useState(false);
-    const [openModal, setOpenModal] = useState(false);
 
     const handleDelete = async () => {
         if (!selectedTask) return;
