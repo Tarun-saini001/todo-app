@@ -91,3 +91,19 @@ export const profileSchema =  z.object({
          .max(25, "Email cannot exceed 25 characters")
         .email("Invalid email format"),
 })
+
+export const imageSchema = z
+    .instanceof(File)
+    .refine(
+        (file) =>
+            [
+                "image/jpeg",
+                "image/jpg",
+                "image/png",
+                "image/webp",
+            ].includes(file.type),
+        {
+            message:
+                "Only images are allowed",
+        }
+    )

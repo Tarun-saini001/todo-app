@@ -3,7 +3,7 @@
 import bcrypt from "bcryptjs"
 import { User } from "@/app/lib/models/user"
 import connectDB from "../lib/db"
-import { loginSchema, profileSchema, registerSchema } from "../validations/auth.user";
+import { imageSchema, loginSchema, profileSchema, registerSchema } from "../validations/auth.user";
 import { messages } from "../constants/messages";
 import { generateAccessToken, generateRefreshToken } from "../lib/utils";
 import RefreshTokenModel from "../lib/models/token";
@@ -131,11 +131,11 @@ export async function loginUser(prevState: any, formData: FormData) {
         const cookieStore = await cookies();
 
         cookieStore.set("accessToken", accessToken, {
-           httpOnly: true,
-           maxAge: 60*15,
-           path: "/",
-           secure: false,
-           sameSite: "lax",
+            httpOnly: true,
+            maxAge: 60 * 15,
+            path: "/",
+            secure: false,
+            sameSite: "lax",
         });
 
         cookieStore.set("refreshToken", refreshToken, {
@@ -273,10 +273,21 @@ export async function updateProfileImage(formData: FormData) {
         } else {
             const image = formData.get("image") as File;
 
+            
             if (!image || image.size === 0) {
                 return {
                     success: false,
                     message: messages.PLS_SELECT_IMAGE
+                };
+            }
+            
+            const validatedImage = imageSchema.safeParse(image);
+
+            if (!validatedImage.success) {
+                return {
+                    success: false,
+                    message:
+                        validatedImage.error.issues[0].message,
                 };
             }
 

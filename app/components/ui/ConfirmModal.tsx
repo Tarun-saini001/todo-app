@@ -1,6 +1,6 @@
 "use client";
 
-export default function ChangeStatus({
+export default function ConfirmModal({
     open,
     onClose,
     onConfirm,

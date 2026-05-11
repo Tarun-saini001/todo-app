@@ -293,7 +293,7 @@ export default function AddTaskPage() {
 
 
                 <div className="mb-4">
-                    <label className="block mb-1 font-medium">Title</label>
+                    <label className="block mb-1 font-medium">Title <span className="text-red-500 ">*</span></label>
                     <input
                         type="text"
                         name="title"
@@ -315,7 +315,7 @@ export default function AddTaskPage() {
 
 
                 <div className="mb-4">
-                    <label className="block mb-1 font-medium">Date</label>
+                    <label className="block mb-1 font-medium">Date <span className="text-red-500 ">*</span></label>
                     <input
                         type="date"
                         name="date"
@@ -338,7 +338,7 @@ export default function AddTaskPage() {
 
 
                     <div>
-                        <label className="block mb-2 font-medium">Priority</label>
+                        <label className="block mb-2 font-medium">Priority <span className="text-red-500 ">*</span></label>
                         <div className="flex gap-6">
                             {["Extreme", "Moderate", "Low"].map((level) => (
                                 <label key={level} className="flex  items-center gap-2">
@@ -359,7 +359,7 @@ export default function AddTaskPage() {
 
                     {isEdit && (
                         <div>
-                            <label className="block mb-2 font-medium">Status</label>
+                            <label className="block mb-2 font-medium">Status <span className="text-red-500 ">*</span></label>
                             <div className="flex gap-6">
                                 {["Not Started", "In-Progress", "Completed"].map((status) => (
                                     <label key={status} className="flex cursor-pointer items-center gap-2">
@@ -384,7 +384,7 @@ export default function AddTaskPage() {
 
                     <div>
                         <label className="block mb-1 font-medium">
-                            Task Description
+                            Task Description <span className="text-red-500 ">*</span>
                         </label>
                         <textarea
                             name="description"
@@ -411,7 +411,7 @@ export default function AddTaskPage() {
 
                     <div>
                         <label className="block mb-1 font-medium">
-                            Upload Image
+                            Upload Image <span className="text-red-500 ">*</span>
                         </label>
                         <label className="cursor-pointer block">
                             <div className="w-full h-40 border border-dashed rounded-xl overflow-hidden  flex  items-center justify-center">

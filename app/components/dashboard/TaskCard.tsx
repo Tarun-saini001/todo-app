@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import ChangeStatus from "@/app/components/ui/ChangeStatus";
+import ChangeStatus from "@/app/components/ui/ConfirmModal";
 import { updateTaskStatus } from "@/app/actions/task.action";
 import { useRouter } from "next/navigation";
 

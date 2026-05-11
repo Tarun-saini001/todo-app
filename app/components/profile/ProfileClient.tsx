@@ -3,8 +3,10 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { updateProfile, updateProfileImage } from "@/app/actions/auth.actions";
-import { profileSchema } from "@/app/validations/auth.user";
+import { imageSchema, profileSchema } from "@/app/validations/auth.user";
 import GoBackButton from "../ui/GoBackButton";
+import ConfirmModal from "../ui/ConfirmModal";
+
 export default function ProfileClient({ user }: any) {
 
     const initialForm = {
@@ -27,6 +29,7 @@ export default function ProfileClient({ user }: any) {
 
     const [errors, setErrors] = useState<any>({});
     const [blurErrors, setBlurErrors] = useState<any>({});
+    const [openRemoveModal, setOpenRemoveModal] = useState(false);
     const isChanged = form.firstName !== initialForm.firstName ||
         form.lastName !== initialForm.lastName ||
         form.userName !== initialForm.userName ||
@@ -39,6 +42,14 @@ export default function ProfileClient({ user }: any) {
         const file = e.target.files?.[0];
 
         if (!file) return;
+
+
+        const result = imageSchema.safeParse(file);
+
+        if (!result.success) {
+            toast.error(result.error.issues[0].message);
+            return;
+        }
 
         setImage(file);
         setPreview(URL.createObjectURL(file));
@@ -220,7 +231,7 @@ export default function ProfileClient({ user }: any) {
                             {(image || (user.profilePic && preview !== "/todoprofile.png")) && (
                                 <button
                                     type="button"
-                                    onClick={removeImage}
+                                    onClick={() => setOpenRemoveModal(true)}
                                     className="bg-gray-200 text-gray-700 px-3 py-1.5 rounded-md text-sm hover:bg-gray-300 transition cursor-pointer"
                                 >
                                     Remove
@@ -247,7 +258,7 @@ export default function ProfileClient({ user }: any) {
 
                 <div>
                     <label className="block mb-2 font-medium">
-                        First Name
+                        First Name <span className="text-red-500 ">*</span>
                     </label>
 
                     <input
@@ -269,7 +280,7 @@ export default function ProfileClient({ user }: any) {
 
                 <div>
                     <label className="block mb-2 font-medium">
-                        Last Name
+                        Last Name <span className="text-red-500 ">*</span>
                     </label>
 
                     <input
@@ -291,7 +302,7 @@ export default function ProfileClient({ user }: any) {
 
                 <div>
                     <label className="block mb-2 font-medium">
-                        Username
+                        Username <span className="text-red-500 ">*</span>
                     </label>
 
                     <input
@@ -313,7 +324,7 @@ export default function ProfileClient({ user }: any) {
 
                 <div>
                     <label className="block mb-2 font-medium">
-                        Email
+                        Email <span className="text-red-500 ">*</span>
                     </label>
 
                     <input
@@ -343,6 +354,16 @@ export default function ProfileClient({ user }: any) {
             >
                 {loading ? "Updating..." : "Update"}
             </button>
+
+            <ConfirmModal
+                open={openRemoveModal}
+                onClose={() => setOpenRemoveModal(false)}
+                onConfirm={async () => {
+                    await removeImage();
+                    setOpenRemoveModal(false);
+                }}
+                message="Are you sure you want to remove your profile image?"
+            />
         </div>
     );
 }
