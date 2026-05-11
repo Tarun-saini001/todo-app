@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TaskCard from "@/app/components/dashboard/TaskCard";
 import TaskDetail from "@/app/components/ui/TaskDetail";
 import { deleteTask } from "@/app/actions/task.action";
@@ -14,15 +14,21 @@ export default function MyTasksClient({
     emptyMessage = "You don't have any tasks yet.",
     showAddButton = false,
 }: any) {
-    
+
     const router = useRouter();
-    
+
     const [tasks, setTasks] = useState(initialTasks);
     const [selectedTask, setSelectedTask] = useState(
         initialTasks?.[0] || null
     );
     const [loading, setLoading] = useState(false);
     const [openModal, setOpenModal] = useState(false);
+
+
+    useEffect(() => {
+        setTasks(initialTasks);
+        setSelectedTask(initialTasks?.[0] || null);
+    }, [initialTasks]);
 
     if (!initialTasks || initialTasks.length === 0) {
         return (
