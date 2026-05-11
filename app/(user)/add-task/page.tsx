@@ -175,6 +175,16 @@ export default function AddTaskPage() {
         }));
 
         setPreviewImage(URL.createObjectURL(file));
+
+        setErrors((prev: any) => ({
+            ...prev,
+            image: undefined,
+        }));
+
+        setBlurErrors((prev: any) => ({
+            ...prev,
+            image: undefined,
+        }));
     };
 
     const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {

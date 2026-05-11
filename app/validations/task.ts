@@ -17,7 +17,7 @@ export const taskSchema = z.object({
         .trim()
         .nonempty("Description is required")
         .min(20, "Description must be at least 20 characters")
-        .max(250, "Description must be at most 100 characters"),
+        .max(250, "Description must be at most 250 characters"),
     image: z
         .any()
         .refine(
