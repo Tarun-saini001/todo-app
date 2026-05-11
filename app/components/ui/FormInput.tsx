@@ -52,7 +52,7 @@ export default function FormInput({
                 <button
                     type="button"
                     onClick={() => setShow((prev) => !prev)}
-                    className="absolute right-3 top-2.5 text-gray-500 hover:text-black"
+                    className="absolute cursor-pointer right-3 top-2.5 text-gray-500 hover:text-black"
                 >
                     {show ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
                 </button>

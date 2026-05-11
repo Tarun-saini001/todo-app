@@ -59,7 +59,7 @@ export default function Navbar({ user }: { user: any }) {
                 />
                 <button
                     onClick={handleSearch}
-                    className="rounded h-9 w-9 cursor-pointer"
+                    className="rounded h-8 w-9 cursor-pointer"
                 >
                     <GrFormSearch
                         className="  text-white h-full w-full rounded p-1 bg-[#FF6767] border "

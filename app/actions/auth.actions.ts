@@ -130,14 +130,13 @@ export async function loginUser(prevState: any, formData: FormData) {
 
         const cookieStore = await cookies();
 
-       const access= cookieStore.set("accessToken", accessToken, {
+        cookieStore.set("accessToken", accessToken, {
            httpOnly: true,
-           maxAge: 60 * 15,
+           maxAge: 60*15,
            path: "/",
            secure: false,
            sameSite: "lax",
         });
-        console.log('access: ', access);
 
         cookieStore.set("refreshToken", refreshToken, {
             httpOnly: true,

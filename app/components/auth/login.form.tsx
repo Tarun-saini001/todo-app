@@ -51,7 +51,7 @@ export default function LoginForm() {
             localStorage.removeItem("loginForm");
             return;
         } else {
-            localStorage.setItem("registerForm", JSON.stringify(formData));
+            localStorage.setItem("loginForm", JSON.stringify(formData));
         }
 
     }, [formData, state.success]);
