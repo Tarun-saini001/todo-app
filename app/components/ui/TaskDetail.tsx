@@ -87,7 +87,7 @@ export default function TaskDetail({
 
                             <p className="text-gray-400 text-xs">
                                 Created:{" "}
-                                {new Date(task.createdAt).toLocaleDateString("en-US")}
+                                {new Date(task.createdAt).toLocaleDateString("en-GB")}
                             </p>
                         </div>
                     </div>

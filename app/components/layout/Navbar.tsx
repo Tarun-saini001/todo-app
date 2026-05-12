@@ -1,10 +1,12 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CiCalendarDate } from "react-icons/ci";
 import { GrFormSearch } from "react-icons/gr";
 import { IoIosNotificationsOutline } from "react-icons/io";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 
 export default function Navbar({ user }: { user: any }) {
     const router = useRouter();
@@ -12,10 +14,58 @@ export default function Navbar({ user }: { user: any }) {
     const searchParams = useSearchParams();
     const [search, setSearch] = useState("");
     const [today, setToday] = useState("");
+    const [dayName, setDayName] = useState("");
+    const [showCalendar, setShowCalendar] = useState(false);
+
+    const [selectedDate, setSelectedDate] = useState<Date>(
+        new Date()
+    );
+    const calendarRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        setToday(new Date().toLocaleDateString("en-US"));
+        const now = new Date();
+
+
+        setDayName(
+            now.toLocaleDateString("en-US", {
+                weekday: "long",
+            })
+        );
+
+
+        const formattedDate = now.toLocaleDateString("en-GB");
+
+        setToday(formattedDate);
     }, []);
+
+    useEffect(() => {
+
+        function handleClickOutside(event: MouseEvent) {
+
+            if (
+                calendarRef.current &&
+                !calendarRef.current.contains(
+                    event.target as Node
+                )
+            ) {
+                setShowCalendar(false);
+            }
+        }
+
+        document.addEventListener(
+            "mousedown",
+            handleClickOutside
+        );
+
+        return () => {
+            document.removeEventListener(
+                "mousedown",
+                handleClickOutside
+            );
+        };
+
+    }, []);
+
     useEffect(() => {
 
         if (pathname === "/my-task") {
@@ -78,12 +128,50 @@ export default function Navbar({ user }: { user: any }) {
                         className="  text-white h-full w-full rounded p-1 bg-[#FF6767] border "
                     />
                 </span> */}
-                <span className="rounded h-8 w-8 cursor-pointer">
+
+                {/* <span className="rounded h-8 w-8 cursor-pointer">
                     <CiCalendarDate
                         className="  text-white h-full w-full rounded p-1 bg-[#FF6767] border "
                     />
-                </span>
-                <span className="text-sm text-sky-500 font-semibold">{today}</span>
+                            </span> */}
+                    <button
+                        onClick={() =>
+                            setShowCalendar(!showCalendar)
+                        }
+                        className="rounded h-8 w-8 cursor-pointer"
+                    >
+                        <CiCalendarDate
+                            className="text-white h-full w-full rounded
+                        p-1 bg-[#FF6767] border"
+                        />
+                    </button>
+                <div className="flex flex-col leading-tight">
+                    <span className="text-sm text-black font-semibold ">
+                        {dayName}
+                    </span>
+                    <span className="text-sm text-sky-500 font-semibold">
+                        {today}
+                    </span>
+                    {showCalendar && (
+
+                        <div
+                            ref={calendarRef}
+                            className="absolute top-14 right-0 z-50
+                        bg-white shadow-2xl rounded-2xl p-4"
+                        >
+
+                            <Calendar
+                                onChange={(value) =>
+                                    setSelectedDate(
+                                        value as Date
+                                    )
+                                }
+                                value={selectedDate}
+                            />
+
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

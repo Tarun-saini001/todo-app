@@ -5,6 +5,8 @@ import { taskSchema } from "@/app/validations/task";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { FaExchangeAlt } from "react-icons/fa";
+import { LuMaximize2 } from "react-icons/lu";
 import { MdOutlineCloseFullscreen } from "react-icons/md";
 
 export default function AddTaskPage() {
@@ -431,18 +433,18 @@ export default function AddTaskPage() {
 
                             </div>
                             {previewImage && (
-                                <div className="flex items-center gap-4 mt-2">
+                                <div className="flex  ml-2 items-center gap-4 mt-2">
 
                                     <button
                                         type="button"
                                         onClick={() => setOpenPreview(true)}
-                                        className="underline text-[#FF6767] text-sm cursor-pointer"
+                                        className="underline text-md flex justify-center items-center gap-1 text-[#FF6767]  cursor-pointer"
                                     >
-                                        View Image
+                                        View <span className="text-sm"><LuMaximize2 /></span> 
                                     </button>
 
-                                    <label className="underline text-gray-600 text-sm cursor-pointer">
-                                        Change
+                                    <label className="underline flex justify-center items-center gap-1 text-gray-600 text-md cursor-pointer">
+                                         Change <span  className="text-sm"><FaExchangeAlt /></span>
 
                                         <input
                                             type="file"
