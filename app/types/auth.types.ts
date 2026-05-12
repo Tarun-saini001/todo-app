@@ -19,3 +19,20 @@ export type RegisterState = {
     };
     message: string;
 };
+
+export type ForgotPasswordState = {
+    success: boolean;
+    message: string;
+    errors?: {
+        email?: string[];
+    };
+};
+
+export type ResetPasswordState = {
+    success: boolean;
+    message: string;
+    errors?: {
+        password?: string[];
+        confirmPassword?: string[];
+    };
+};

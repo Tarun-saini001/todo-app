@@ -345,6 +345,7 @@ export async function forgotPassword(
         if (!validated.success) {
             return {
                 success: false,
+                message:"",
                 errors:
                     validated.error.flatten().fieldErrors,
             };
@@ -371,7 +372,7 @@ export async function forgotPassword(
         });
 
         const resetLink =
-            `${process.env.NEXT_PUBLIC_APP_URL}` +
+            `${process.env.BASE_URL}` +
             `/reset-password/${token}`;
 
         await transporter.sendMail({
@@ -426,6 +427,7 @@ export async function resetPassword(
         if (!validated.success) {
             return {
                 success: false,
+                message:"",
                 errors:
                     validated.error.flatten().fieldErrors,
             };
