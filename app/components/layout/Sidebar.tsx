@@ -17,18 +17,18 @@ export default function Sidebar({ user }: any) {
     return (
         <aside className="w-65 flex flex-col">
 
-            
+
             <div className="h-14 bg-gray-100 shrink-0" />
 
-           
+
             <div className="flex-1 bg-[#FF6767] rounded-tr-3xl relative px-5 pb-5 pt-14 flex flex-col justify-between">
 
-                
+
                 <div>
 
                     <div className="absolute -top-10 left-1/2 -translate-x-1/2">
 
-                        <div className="w-24 h-24 rounded-full bg-white p-1 shadow-lg">
+                        <div className="w-22 h-22 rounded-full bg-white p-1 shadow-lg">
 
                             <img
                                 src={user?.profilePic || "/todoprofile.png"}
@@ -38,7 +38,7 @@ export default function Sidebar({ user }: any) {
                         </div>
                     </div>
 
-                    <div className="mt-8 text-center text-white">
+                    <div className="text-center text-white">
 
                         <h3 className="font-semibold text-lg">
                             {user?.firstName} {user?.lastName}
@@ -49,8 +49,8 @@ export default function Sidebar({ user }: any) {
                         </p>
                     </div>
 
-                
-                    <nav className="mt-8 space-y-3">
+
+                    <nav className="mt-5 space-y-2">
 
                         {navItems.map((item) => (
                             <SidebarItem
@@ -67,8 +67,8 @@ export default function Sidebar({ user }: any) {
                     </nav>
                 </div>
 
-               
-               <span className="text-white"><LogoutButton /></span> 
+
+                <span className="text-white"><LogoutButton /></span>
             </div>
         </aside>
     );
@@ -86,12 +86,11 @@ function SidebarItem({
     return (
         <div
             onClick={onClick}
-            className={`cursor-pointer px-4 py-3 rounded-xl transition text-base
-            ${
-                active
+            className={`cursor-pointer px-3 py-2 rounded-xl transition text-base
+            ${active
                     ? "bg-white text-[#FF6767] font-semibold shadow-sm"
                     : "text-white hover:bg-white hover:text-[#FF6767]"
-            }`}
+                }`}
         >
             {label}
         </div>

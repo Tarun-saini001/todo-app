@@ -67,11 +67,11 @@ export default function TaskCard({ task }: { task: Task }) {
 
                 <div className="flex flex-col justify-between flex-1 min-w-0">
                     <div>
-                        <h3 className="font-semibold text-sm text-gray-800">
+                        <h3 className="font-semibold text-md text-gray-800">
                             {task.title}
                         </h3>
 
-                        <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                        <p className="text-sm text-gray-500 mt-1 line-clamp-2">
                             {task.description}
                         </p>
                     </div>

@@ -42,39 +42,42 @@ export default function Navbar({ user }: { user: any }) {
 
             <div className="text-[#FF6767] text-2xl font-bold ">Dash<span className="text-black">board</span></div>
 
-            <div className="flex justify-center items-center  gap-1 w-[30%]">
-                <input
-                    type="text"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            handleSearch();
-                        }
-                    }}
-                    placeholder="Search your task here..."
-                    className="w-full cursor-pointer px-4 py-1 shadow rounded-lg  outline-none 
-                   focus:ring-2 focus:ring-[#FF6767] focus:border-[#FF6767] 
-                        transition"
-                />
-                <button
-                    onClick={handleSearch}
-                    className="rounded h-8 w-9 cursor-pointer"
-                >
-                    <GrFormSearch
-                        className="  text-white h-full w-full rounded p-1 bg-[#FF6767] border "
+            <div className="flex justify-center items-center w-[40%]">
+                <div className="relative w-full">
+                    <input
+                        type="text"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                handleSearch();
+                            }
+                        }}
+                        placeholder="Search your task here..."
+                        className="w-full px-4 pr-14 py-2 shadow rounded-lg outline-none
+            focus:ring-2 focus:ring-[#FF6767] focus:border-[#FF6767]
+            transition"
                     />
-                </button>
 
+                    <button
+                        onClick={handleSearch}
+                        className="absolute top-0 right-0 h-full w-12"
+                    >
+                        <GrFormSearch
+                            className="text-white h-full w-full p-1 bg-[#FF6767]
+                rounded-lg"
+                        />
+                    </button>
+                </div>
             </div>
 
 
             <div className="flex items-center gap-4">
-                <span className="rounded h-8 w-8 cursor-pointer">
+                {/* <span className="rounded h-8 w-8 cursor-pointer">
                     <IoIosNotificationsOutline
                         className="  text-white h-full w-full rounded p-1 bg-[#FF6767] border "
                     />
-                </span>
+                </span> */}
                 <span className="rounded h-8 w-8 cursor-pointer">
                     <CiCalendarDate
                         className="  text-white h-full w-full rounded p-1 bg-[#FF6767] border "

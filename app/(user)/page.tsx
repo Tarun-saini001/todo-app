@@ -109,10 +109,10 @@ export default async function Home() {
                             notStarted={stats.notStarted}
                         />
 
-                        <div className="bg-white  h-full p-6 rounded-2xl shadow-sm  ">
+                        <div className="bg-white  h-full px-4 py-6 rounded-2xl shadow-sm  ">
                             <h3 className="font-semibold  flex items-center gap-2"><BiTask /> Completed Task</h3>
 
-                            <div className="flex flex-col gap-5  h-full   ">
+                            <div className="flex flex-col gap-6  mt-5 h-full   ">
                                 {completedTasks.length === 0 ? (
                                     <p className="text-gray-500 flex justify-center items-center h-full text-sm">
                                         No tasks completed yet.

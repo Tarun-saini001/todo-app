@@ -8,9 +8,9 @@ export default function AddTaskCTA() {
     return (
         <button
             onClick={() => router.push("/add-task")}
-            className="bg-[#FF6767] text-white px-5 py-2 cursor-pointer rounded-md"
+            className=" text-gray-500 px-5 py-2 cursor-pointer rounded-md"
         >
-            + Add Task
+            <span className="text-[#FF6767] text-2xl">+</span> Add Task
         </button>
     );
 }
