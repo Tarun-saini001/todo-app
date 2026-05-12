@@ -3,7 +3,7 @@
 import bcrypt from "bcryptjs"
 import { User } from "@/app/lib/models/user"
 import connectDB from "../lib/db"
-import { imageSchema, loginSchema, profileSchema, registerSchema } from "../validations/auth.user";
+import { forgotPasswordSchema, imageSchema, loginSchema, profileSchema, registerSchema, resetPasswordSchema } from "../validations/auth.user";
 import { messages } from "../constants/messages";
 import { generateAccessToken, generateRefreshToken } from "../lib/utils";
 import RefreshTokenModel from "../lib/models/token";
@@ -12,6 +12,9 @@ import { redirect } from "next/navigation";
 import { getUser } from "../lib/auth";
 import cloudinary from "../lib/cloudnary";
 import { revalidatePath } from "next/cache";
+import crypto from "crypto";
+import { PasswordReset } from "@/app/lib/models/passwordReset";
+import { transporter } from "../lib/mail";
 
 export async function registerUser(prevState: any, formData: FormData) {
 
@@ -273,14 +276,14 @@ export async function updateProfileImage(formData: FormData) {
         } else {
             const image = formData.get("image") as File;
 
-            
+
             if (!image || image.size === 0) {
                 return {
                     success: false,
                     message: messages.PLS_SELECT_IMAGE
                 };
             }
-            
+
             const validatedImage = imageSchema.safeParse(image);
 
             if (!validatedImage.success) {
@@ -320,6 +323,159 @@ export async function updateProfileImage(formData: FormData) {
 
     } catch (error) {
         console.log("Failed to update profile image:", error);
+
+        return {
+            success: false,
+            message: messages.SOMETHNG_WENT_WRONG,
+        };
+    }
+}
+
+export async function forgotPassword(
+    prevState: any,
+    formData: FormData
+) {
+    try {
+        await connectDB();
+
+        const validated = forgotPasswordSchema.safeParse({
+            email: formData.get("email"),
+        });
+
+        if (!validated.success) {
+            return {
+                success: false,
+                errors:
+                    validated.error.flatten().fieldErrors,
+            };
+        }
+
+        const { email } = validated.data;
+
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return {
+                success: false,
+                message: messages.USER_NOT_FOUND,
+            };
+        }
+
+        const token = crypto.randomBytes(32).toString("hex");
+
+        await PasswordReset.create({
+            userId: user._id,
+            token,
+            expiresAt:
+                new Date(Date.now() + 1000 * 60 * 15),
+        });
+
+        const resetLink =
+            `${process.env.NEXT_PUBLIC_APP_URL}` +
+            `/reset-password/${token}`;
+
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "Reset Password",
+
+            html: `
+                <h2>Password Reset</h2>
+
+                <p>Click below link to reset password:</p>
+
+                <a href="${resetLink}">
+                    Reset Password
+                </a>
+
+                <p>This link expires in 15 minutes.</p>
+            `,
+        });
+
+        return {
+            success: true,
+            message: messages.RESET_LINK_TO_MAIL,
+        };
+
+    } catch (error) {
+        console.log(error);
+
+        return {
+            success: false,
+            message: messages.SOMETHNG_WENT_WRONG,
+        };
+    }
+}
+
+
+export async function resetPassword(
+    token: string,
+    prevState: any,
+    formData: FormData
+) {
+    try {
+        await connectDB();
+
+        const validated =
+            resetPasswordSchema.safeParse({
+                password: formData.get("password"),
+                confirmPassword:
+                    formData.get("confirmPassword"),
+            });
+
+        if (!validated.success) {
+            return {
+                success: false,
+                errors:
+                    validated.error.flatten().fieldErrors,
+            };
+        }
+
+        const resetDoc =
+            await PasswordReset.findOne({
+                token,
+            });
+
+        if (!resetDoc) {
+            return {
+                success: false,
+                message: messages.INVALID_RESET_TOKEN,
+            };
+        }
+
+        if (
+            new Date(resetDoc.expiresAt) < new Date()
+        ) {
+            return {
+                success: false,
+                message: messages.RESET_TOKEN_EXPIRED,
+            };
+        }
+
+        const hashedPassword =
+            await bcrypt.hash(
+                validated.data.password,
+                10
+            );
+
+        await User.findByIdAndUpdate(
+            resetDoc.userId,
+            {
+                password: hashedPassword,
+            }
+        );
+
+        await PasswordReset.deleteOne({
+            token,
+        });
+
+        return {
+            success: true,
+            message: messages.PASSWORD_RESET_SUCCESS,
+        };
+
+    } catch (error) {
+        console.log(error);
 
         return {
             success: false,

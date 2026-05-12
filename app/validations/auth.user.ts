@@ -58,8 +58,8 @@ export const loginSchema = z.object({
 });
 
 
-export const profileSchema =  z.object({
-     firstName: z.string()
+export const profileSchema = z.object({
+    firstName: z.string()
         .trim()
         .nonempty("First name is required")
         .min(2, "Name must be at least 2 characters")
@@ -71,7 +71,7 @@ export const profileSchema =  z.object({
         .trim()
         .nonempty("Last name is required")
         .min(2, "Name must be at least 2 characters")
-         .max(15, "Last name cannot exceed 15 characters")
+        .max(15, "Last name cannot exceed 15 characters")
         .regex(/^[A-Z]/, "Name must start with a capital letter")
         .regex(/^[A-Za-z\s]*$/, "Name must contain only letters"),
 
@@ -88,7 +88,7 @@ export const profileSchema =  z.object({
         .string()
         .trim()
         .nonempty("Email is required")
-         .max(25, "Email cannot exceed 25 characters")
+        .max(25, "Email cannot exceed 25 characters")
         .email("Invalid email format"),
 })
 
@@ -107,3 +107,33 @@ export const imageSchema = z
                 "Only images are allowed",
         }
     )
+
+
+export const forgotPasswordSchema = z.object({
+    email: z
+        .string()
+        .trim()
+        .nonempty("Email is required")
+        .email("Invalid email"),
+});
+
+export const resetPasswordSchema = z
+    .object({
+        password: z
+            .string()
+            .trim()
+            .nonempty("Password is required")
+            .min(6, "Password must be at least 6 characters")
+            .regex(
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).+$/,
+                "Password must contain uppercase, lowercase, number & special character"
+            ),
+        confirmPassword: z
+            .string()
+            .trim()
+            .nonempty("Confirm password is required"),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+        message: "Passwords do not match",
+        path: ["confirmPassword"],
+    });

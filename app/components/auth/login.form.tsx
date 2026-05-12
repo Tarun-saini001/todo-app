@@ -7,6 +7,7 @@ import { loginSchema } from "@/app/validations/auth.user";
 import toast from "react-hot-toast";
 import { LoginState } from "../../types/auth.types";
 import FormInput from "../ui/FormInput";
+import Link from "next/link";
 
 
 
@@ -161,29 +162,39 @@ export default function LoginForm() {
                 error={blurErrors.userName?.[0] || state.errors?.userName?.[0]}
             />
 
+            <div>
+                <FormInput
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder="Enter Password"
+                    icon="/icons/password.png"
+                    isPassword
+                    error={blurErrors.password?.[0] || state.errors?.password?.[0]}
+                />
 
-            <FormInput
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                placeholder="Enter Password"
-                icon="/icons/password.png"
-                isPassword
-                error={blurErrors.password?.[0] || state.errors?.password?.[0]}
-            />
+                {serverMessage && (
+                    <p className="text-red-500 text-sm">{serverMessage}</p>
+                )}
+                <div className="flex justify-between">
+                    <button
+                        type="submit"
+                        disabled={isPending}
+                        className="bg-[#FF6767] cursor-pointer mt-2 text-white px-6 py-2 rounded-md hover:opacity-90 w-fit"
+                    >
+                        {isPending ? "Signing In..." : "Sign In"}
+                    </button>
+                    <Link
+                        href="/forgot-password"
+                        className="text-sm text-[#FF6767] mr-2"
+                    >
+                        Forgot Password?
+                    </Link>
+                </div>
+            </div>
 
 
-            {serverMessage && (
-                <p className="text-red-500 text-sm">{serverMessage}</p>
-            )}
-            <button
-                type="submit"
-                disabled={isPending}
-                className="bg-[#FF6767] cursor-pointer text-white px-6 py-2 rounded-md hover:opacity-90 w-fit"
-            >
-                {isPending ? "Signing In..." : "Sign In"}
-            </button>
         </form>
     )
 }

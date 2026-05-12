@@ -19,4 +19,8 @@ export const messages = {
     PROFILE_UPDATED:"Profile updated successfully",
     PROFILE_IMAGE_UPDATED:"Profile image updated",
     PLS_SELECT_IMAGE:"Please select an image",
+    RESET_LINK_TO_MAIL: "Reset link sent to email",
+    PASSWORD_RESET_SUCCESS: "Password reset successful",
+    RESET_TOKEN_EXPIRED:"Reset token expired",
+    INVALID_RESET_TOKEN:"Invalid reset token"
 }
