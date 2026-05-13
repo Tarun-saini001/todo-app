@@ -89,7 +89,7 @@ export default async function Home() {
 
                     <div className="col-span-2 bg-white p-3 rounded-2xl shadow-sm ">
                         <div className="flex justify-between items-center mb-3">
-                            <h3 className="font-semibold text-gray-800 text-lg">To-Do</h3>
+                            <h3 className="font-semibold text-[#FF6767]  text-lg">To-Do</h3>
                             <AddTaskButton />
                         </div>
 
@@ -101,7 +101,7 @@ export default async function Home() {
                     </div>
 
 
-                    <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-4">
 
                         <StatsCard
                             completed={stats.completed}
@@ -109,10 +109,10 @@ export default async function Home() {
                             notStarted={stats.notStarted}
                         />
 
-                        <div className="bg-white  h-full px-4 py-6 rounded-2xl shadow-sm  ">
-                            <h3 className="font-semibold  flex items-center gap-2"><BiTask /> Completed Task</h3>
+                        <div className="bg-white  h-full px-4 py-4 rounded-2xl shadow-sm  ">
+                            <h3 className="font-semibold text-[#FF6767]  flex items-center gap-2"><BiTask className="text-gray-400" /> Completed Task</h3>
 
-                            <div className="flex flex-col gap-6  mt-5 h-full   ">
+                            <div className="flex flex-col gap-4  mt-3 h-full   ">
                                 {completedTasks.length === 0 ? (
                                     <p className="text-gray-500 flex justify-center items-center h-full text-sm">
                                         No tasks completed yet.
