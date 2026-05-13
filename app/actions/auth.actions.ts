@@ -3,7 +3,7 @@
 import bcrypt from "bcryptjs"
 import { User } from "@/app/lib/models/user"
 import connectDB from "../lib/db"
-import { forgotPasswordSchema, imageSchema, loginSchema, profileSchema, registerSchema, resetPasswordSchema } from "../validations/auth.user";
+import { changePasswordSchema, forgotPasswordSchema, imageSchema, loginSchema, profileSchema, registerSchema, resetPasswordSchema } from "../validations/auth.user";
 import { messages } from "../constants/messages";
 import { generateAccessToken, generateRefreshToken } from "../lib/utils";
 import RefreshTokenModel from "../lib/models/token";
@@ -551,6 +551,105 @@ export async function resetPassword(
 
     } catch (error) {
         console.log(error);
+
+        return {
+            success: false,
+            message: messages.SOMETHNG_WENT_WRONG,
+        };
+    }
+}
+
+export async function changePassword(
+    formData: FormData
+) {
+
+    const validatedFields =
+        changePasswordSchema.safeParse({
+            currentPassword: formData.get("currentPassword"),
+            newPassword: formData.get("newPassword"),
+            confirmPassword: formData.get("confirmPassword"),
+        });
+
+    if (!validatedFields.success) {
+
+        return {
+            success: false,
+            errors:
+                validatedFields.error.flatten().fieldErrors,
+            message: "",
+        };
+    }
+
+    const {
+        currentPassword,
+        newPassword,
+    } = validatedFields.data;
+
+    try {
+
+        await connectDB();
+
+        const currentUser = await getUser();
+
+        if (!currentUser) {
+
+            return {
+                success: false,
+                message: messages.UNAUTHERISED,
+            };
+        }
+
+        const user = await User.findById(currentUser._id);
+
+        if (!user) {
+            return {
+                success: false,
+                message: messages.USER_NOT_FOUND,
+            };
+        }
+
+        const isMatch = await bcrypt.compare(
+            currentPassword,
+            user.password
+        );
+
+        if (!isMatch) {
+
+            return {
+                success: false,
+                message: messages.CURRENT_PASS_INCORRECT,
+            };
+        }
+
+        const isSamePassword =
+            await bcrypt.compare(
+                newPassword,
+                user.password
+            );
+
+        if (isSamePassword) {
+
+            return {
+                success: false,
+                message: messages.NEW_PASS_SAME_AS_CURRENT,
+            };
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        user.password = hashedPassword;
+
+        await user.save();
+
+        return {
+            success: true,
+            message: messages.PASS_UPDATE_SUCCESS,
+        };
+
+    } catch (error) {
+
+        console.log(
+            "Failed to change password:", error);
 
         return {
             success: false,

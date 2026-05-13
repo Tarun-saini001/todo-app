@@ -22,5 +22,8 @@ export const messages = {
     RESET_LINK_TO_MAIL: "Reset link sent to email",
     PASSWORD_RESET_SUCCESS: "Password reset successful",
     RESET_TOKEN_EXPIRED:"Reset token expired",
-    INVALID_RESET_TOKEN:"Invalid reset token"
+    INVALID_RESET_TOKEN:"Invalid reset token",
+    CURRENT_PASS_INCORRECT:"Current password is incorrect",
+    NEW_PASS_SAME_AS_CURRENT:"New password cannot be same as current password",
+    PASS_UPDATE_SUCCESS:"Password updated successfully"
 }

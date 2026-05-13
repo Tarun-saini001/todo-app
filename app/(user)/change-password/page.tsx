@@ -7,7 +7,7 @@ export default async function Page() {
     const user = await getUser();
 
     return (
-        <div className="h-full">
+        <div className="h-full ">
             <ChangePasswordClient
                 user={JSON.parse(JSON.stringify(user))}
             />
