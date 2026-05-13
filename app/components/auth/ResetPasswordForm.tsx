@@ -187,12 +187,12 @@ export default function ResetPasswordForm({
     return (
         <form
             onSubmit={handleSubmit}
-            className="bg-white p-6 text-center rounded-xl shadow w-[400px]"
+            className="bg-white  rounded-xl  w-[400px]"
         >
 
-            <h2 className="text-2xl font-semibold mb-5">
+            {/* <h2 className="text-2xl font-semibold mb-5">
                 Reset Password
-            </h2>
+            </h2> */}
 
             <div className="space-y-4">
 

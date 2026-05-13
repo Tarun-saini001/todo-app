@@ -345,7 +345,7 @@ export async function forgotPassword(
         if (!validated.success) {
             return {
                 success: false,
-                message:"",
+                message: "",
                 errors:
                     validated.error.flatten().fieldErrors,
             };
@@ -381,16 +381,89 @@ export async function forgotPassword(
             subject: "Reset Password",
 
             html: `
-                <h2>Password Reset</h2>
+<div style="
+    background:#f3f4f6;
+    padding:40px 20px;
+    font-family:Arial,sans-serif;
+">
 
-                <p>Click below link to reset password:</p>
+    <div style="
+        max-width:650px;
+        margin:auto;
+        background:white;
+        border:1px solid #e5e7eb;
+        padding:50px 55px;
+    ">
 
-                <a href="${resetLink}">
-                    Reset Password
-                </a>
+        <h1 style="
+            text-align:center;
+            font-size:48px;
+            margin-bottom:60px;
+            color:#111827;
+            font-weight:700;
+        ">
+            Password Reset Info
+        </h1>
 
-                <p>This link expires in 15 minutes.</p>
-            `,
+        <p style="
+            font-size:20px;
+            color:#374151;
+            line-height:1.7;
+            margin-bottom:45px;
+        ">
+            <strong>${user.firstName}</strong>,
+            we received a request to reset your password.
+        </p>
+
+        <a
+            href="${resetLink}"
+            style="
+                display:inline-block;
+                background:#FF6767;
+                color:white;
+                text-decoration:none;
+                padding:18px 34px;
+                font-size:22px;
+                font-weight:600;
+                border-radius:2px;
+                margin-bottom:55px;
+            "
+        >
+            Reset your password
+        </a>
+
+        <p style="
+            font-size:18px;
+            color:#374151;
+            line-height:1.8;
+            margin-bottom:45px;
+        ">
+            This link will expire in 15 minutes.
+            If you did not request a new password,
+            please disregard this message.
+        </p>
+
+        <p style="
+            font-size:18px;
+            color:#374151;
+            line-height:1.7;
+        ">
+            Questions? Contact
+            <a
+                href="mailto:support@todoapp.com"
+                style="
+                    color:#FF6767;
+                    text-decoration:underline;
+                    font-weight:600;
+                "
+            >
+                support@todoapp.com
+            </a>
+        </p>
+
+    </div>
+</div>
+`
         });
 
         return {
@@ -427,7 +500,7 @@ export async function resetPassword(
         if (!validated.success) {
             return {
                 success: false,
-                message:"",
+                message: "",
                 errors:
                     validated.error.flatten().fieldErrors,
             };

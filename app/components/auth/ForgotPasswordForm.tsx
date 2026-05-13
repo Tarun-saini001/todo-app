@@ -5,6 +5,7 @@ import { useActionState, useEffect, useState, useTransition } from "react";
 import toast from "react-hot-toast";
 import FormInput from "../ui/FormInput";
 import { ForgotPasswordState } from "../../types/auth.types";
+import { forgotPasswordSchema } from "@/app/validations/auth.user";
 
 const initialState: ForgotPasswordState = {
     success: false,
@@ -68,9 +69,27 @@ export default function ForgotPasswordForm() {
     const handleSubmit = async (
         e: React.FormEvent<HTMLFormElement>
     ) => {
+
         e.preventDefault();
 
         setServerMessage("");
+
+        const result =
+            forgotPasswordSchema.safeParse(formData);
+
+        if (!result.success) {
+
+            const errors =
+                result.error.flatten().fieldErrors;
+
+            setBlurErrors({
+                email: errors.email,
+            });
+
+            return;
+        }
+
+        setBlurErrors({});
 
         const submitData = new FormData();
 
@@ -80,29 +99,46 @@ export default function ForgotPasswordForm() {
             formAction(submitData);
         });
     };
+
     const handleBlur = (
         e: React.FocusEvent<HTMLInputElement>
     ) => {
 
+        const fieldName = e.target.name;
         const value = e.target.value;
 
-        if (!value) {
-            setBlurErrors({
-                email: ["Email is required"],
-            });
+        const result = forgotPasswordSchema.safeParse({
+            ...formData,
+            [fieldName]: value,
+        });
+
+        if (!result.success) {
+
+            const errors = result.error.flatten().fieldErrors;
+
+            setBlurErrors((prev) => ({
+                ...prev,
+                [fieldName]:
+                    errors[fieldName as keyof typeof errors],
+            }));
+
         } else {
-            setBlurErrors({});
+
+            setBlurErrors((prev) => ({
+                ...prev,
+                [fieldName]: undefined,
+            }));
         }
     };
 
     return (
         <form
             onSubmit={handleSubmit}
-            className="bg-white p-6 rounded-xl text-center shadow w-[400px]"
+            className="bg-white  rounded-xl   w-[400px]"
         >
-            <h2 className="text-2xl font-semibold mb-5">
+            {/* <h2 className="text-2xl font-semibold mb-5">
                 Forgot Password
-            </h2>
+            </h2> */}
 
             <FormInput
                 name="email"
@@ -119,7 +155,7 @@ export default function ForgotPasswordForm() {
             />
 
             {serverMessage && (
-                <p className="text-red-500 border text-sm mt-1">
+                <p className="text-red-500  text-sm mt-1">
                     {serverMessage}
                 </p>
             )}
