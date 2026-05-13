@@ -137,3 +137,33 @@ export const resetPasswordSchema = z
         message: "Passwords do not match",
         path: ["confirmPassword"],
     });
+
+export const changePasswordSchema = z
+    .object({
+        currentPassword: z
+            .string()
+            .trim()
+            .nonempty("Current password is required"),
+
+        newPassword: z
+            .string()
+            .trim()
+            .nonempty("Password is required")
+            .min(6, "Password must be at least 6 characters")
+            .regex(
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).+$/,
+                "Password must contain uppercase, lowercase, number & special character"
+            ),
+
+        confirmPassword: z
+            .string()
+            .trim()
+            .nonempty("Confirm password is required"),
+    })
+    .refine(
+        (data) => data.newPassword === data.confirmPassword,
+        {
+            path: ["confirmPassword"],
+            message: "Passwords do not match",
+        }
+    );

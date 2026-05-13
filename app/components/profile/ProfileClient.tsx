@@ -6,9 +6,10 @@ import { updateProfile, updateProfileImage } from "@/app/actions/auth.actions";
 import { imageSchema, profileSchema } from "@/app/validations/auth.user";
 import GoBackButton from "../ui/GoBackButton";
 import ConfirmModal from "../ui/ConfirmModal";
+import { useRouter } from "next/navigation";
 
 export default function ProfileClient({ user }: any) {
-
+    const router = useRouter();
     const initialForm = {
         firstName: user.firstName || "",
         lastName: user.lastName || "",
@@ -344,16 +345,29 @@ export default function ProfileClient({ user }: any) {
                 </div>
             </div>
 
-            <button
-                onClick={handleSubmit}
-                disabled={loading || !isChanged}
-                className={`mt-8 px-6 py-2 rounded-md text-white transition
-    ${loading || !isChanged ? "bg-[#FF6767]/50 cursor-not-allowed"
-                        : "bg-[#FF6767] cursor-pointer"
-                    }`}
-            >
-                {loading ? "Updating..." : "Update"}
-            </button>
+            <div className="flex items-center gap-4 mt-8">
+
+                <button
+                    onClick={handleSubmit}
+                    disabled={loading || !isChanged}
+                    className={`px-6 py-2 rounded-md text-white transition ${loading || !isChanged
+                        ? "bg-[#FF6767]/50 cursor-not-allowed"
+                        : "bg-[#FF6767] cursor-pointer hover:bg-[#ff5252]"
+                        }`}
+                >
+                    {loading ? "Updating..." : "Update"}
+                </button>
+
+                <button
+                    type="button"
+                    onClick={() => router.push(`/change-password`)}
+                    className="px-4 py-2 rounded-md border 
+         bg-[#FF6767] text-white transition cursor-pointer"
+                >
+                    Change Password
+                </button>
+
+            </div>
 
             <ConfirmModal
                 open={openRemoveModal}
